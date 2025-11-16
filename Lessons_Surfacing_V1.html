@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-AAR - Lessons Learned</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e1a;
+            color: #e1e4ea;
+        }
+
+        .header {
+            background: #151b2e;
+            border-bottom: 1px solid #1e2535;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .app-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-title h1 {
+            color: #00bfff;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .app-title p {
+            color: #8b92a8;
+            font-size: 0.875rem;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            background: #1e2535;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            color: #e1e4ea;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #151b2e;
+            border-right: 1px solid #1e2535;
+            padding: 1.5rem 0;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #8b92a8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #1e2535;
+            color: #e1e4ea;
+        }
+
+        .nav-item.active {
+            background: #1e3a52;
+            color: #e1e4ea;
+            border-left: 3px solid #00bfff;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #8b92a8;
+        }
+
+        .filters-section {
+            background: #151b2e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #1e2535;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            color: #8b92a8;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 4px;
+            padding: 0.5rem;
+            color: #e1e4ea;
+            font-size: 0.875rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #00bfff;
+            color: #0a0e1a;
+        }
+
+        .btn-primary:hover {
+            background: #33ccff;
+        }
+
+        .btn-secondary {
+            background: #2a3447;
+            color: #e1e4ea;
+        }
+
+        .btn-secondary:hover {
+            background: #3a4557;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .stat-card h3 {
+            color: #8b92a8;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #e1e4ea;
+        }
+
+        .lessons-section {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1e2535;
+        }
+
+        .section-header h3 {
+            font-size: 1.25rem;
+        }
+
+        .lesson-item {
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .lesson-item:hover {
+            border-color: #00bfff;
+            background: #0f1320;
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .lesson-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+
+        .meta-badge {
+            background: #1e2535;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #8b92a8;
+        }
+
+        .meta-badge.category {
+            background: #1e3a52;
+            color: #00bfff;
+        }
+
+        .meta-badge.frequency {
+            background: #523a1e;
+            color: #d4a017;
+        }
+
+        .lesson-description {
+            color: #b0b5c2;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .lesson-sources {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #8b92a8;
+            font-size: 0.875rem;
+        }
+
+        .source-link {
+            color: #00bfff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        .expand-btn {
+            background: none;
+            border: none;
+            color: #00bfff;
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
+
+        .priority-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .priority-high {
+            background: #ff4444;
+        }
+
+        .priority-medium {
+            background: #d4a017;
+        }
+
+        .priority-low {
+            background: #44ff44;
+        }
+
+        .export-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1e2535;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Insights Summary Cards */
+        .insights-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-card {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .insight-card.critical {
+            border-left-color: #ff4444;
+        }
+
+        .insight-card.warning {
+            border-left-color: #d4a017;
+        }
+
+        .insight-card.trending {
+            border-left-color: #00bfff;
+        }
+
+        .insight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #8b92a8;
+            letter-spacing: 0.5px;
+        }
+
+        .insight-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e1e4ea;
+        }
+
+        .insight-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-detail {
+            font-size: 0.875rem;
+            color: #8b92a8;
+            line-height: 1.5;
+        }
+
+        /* Pattern Breakdown */
+        .pattern-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .breakdown-section {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .breakdown-section h3 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: #e1e4ea;
+        }
+
+        .breakdown-table {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .breakdown-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1.5fr;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid #1e2535;
+            align-items: center;
+        }
+
+        .breakdown-row.header {
+            background: #0a0e1a;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #8b92a8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.625rem 1rem;
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-row:not(.header):hover {
+            background: #0f1320;
+        }
+
+        .breakdown-cell {
+            font-size: 0.875rem;
+            color: #e1e4ea;
+        }
+
+        .breakdown-cell.team,
+        .breakdown-cell.region {
+            font-weight: 500;
+        }
+
+        .breakdown-cell.number {
+            font-weight: 600;
+            color: #00bfff;
+            text-align: center;
+        }
+
+        .breakdown-cell.total {
+            color: #8b92a8;
+            font-size: 0.8125rem;
+        }
+
+        /* Enhanced Lesson Items */
+        .lesson-item-enhanced {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 0;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .lesson-item-enhanced:hover {
+            border-color: #2a3447;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .lesson-header-enhanced {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: #0f1320;
+            align-items: start;
+        }
+
+        .frequency-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            padding: 0.75rem;
+            border-radius: 6px;
+            flex-shrink: 0;
+            background: #1e2535;
+        }
+
+        .frequency-badge.critical {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+        }
+
+        .frequency-badge.high {
+            background: rgba(212, 160, 23, 0.1);
+            border: 2px solid #d4a017;
+        }
+
+        .frequency-badge.medium {
+            background: rgba(0, 191, 255, 0.1);
+            border: 2px solid #00bfff;
+        }
+
+        .freq-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #e1e4ea;
+            line-height: 1;
+        }
+
+        .freq-label-small {
+            font-size: 0.625rem;
+            color: #8b92a8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
+        }
+
+        .lesson-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lesson-title-enhanced {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .lesson-meta-enhanced {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .lesson-body {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .pattern-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+            padding: 1.25rem;
+            background: #0a0e1a;
+            border-radius: 6px;
+            border: 1px solid #1e2535;
+        }
+
+        .pattern-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-header {
+            font-size: 0.75rem;
+            color: #8b92a8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 0.9375rem;
+            color: #e1e4ea;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .lesson-description {
+            color: #b0b5c2;
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            font-size: 0.9375rem;
+        }
+
+        .source-grid {
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #1e2535;
+        }
+
+        .source-header {
+            font-size: 0.8125rem;
+            color: #8b92a8;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .source-tags {
+            display: flex;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .source-tag {
+            background: #0a0e1a;
+            padding: 0.5rem 0.875rem;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            color: #00bfff;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #1e2535;
+        }
+
+        .source-tag:hover {
+            background: #151b2e;
+            border-color: #00bfff;
+        }
+
+        .team-tag {
+            background: #1e2535;
+            color: #8b92a8;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 1200px) {
+            .pattern-breakdown {
+                grid-template-columns: 1fr;
+            }
+            
+            .breakdown-row {
+                grid-template-columns: 2fr 2fr 1fr 1.5fr;
+                font-size: 0.8125rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .insights-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Interactive Issue Tree */
+        .issue-tree-section {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .issue-tree-section .section-header {
+            border-bottom: 1px solid #1e2535;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .issue-tree-section .section-header > div:first-child h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .issue-tree-section .section-header > div:first-child p {
+            color: #8b92a8;
+            font-size: 0.875rem;
+        }
+
+        .tree-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .tree-controls label {
+            color: #8b92a8;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .hierarchy-select {
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            color: #e1e4ea;
+            font-size: 0.875rem;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .hierarchy-select:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+
+        .hierarchy-select:hover {
+            border-color: #00bfff;
+        }
+
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            padding: 1rem 0;
+        }
+
+        .tree-branch {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            position: relative;
+        }
+
+        /* Root Node */
+        .root-node {
+            min-width: 180px;
+            background: linear-gradient(135deg, #1e3a52, #2a4a62);
+            border: 2px solid #00bfff;
+            border-radius: 8px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 3;
+        }
+
+        .root-node:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 16px rgba(0, 191, 255, 0.3);
+            border-color: #33ccff;
+        }
+
+        .root-node .node-content {
+            text-align: center;
+        }
+
+        .root-node .node-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+        }
+
+        .root-node .node-count {
+            font-size: 0.875rem;
+            color: #00bfff;
+            font-weight: 600;
+        }
+
+        /* Branch Connector */
+        .branch-connector {
+            width: 60px;
+            height: 2px;
+            background: #2a3447;
+            margin-top: 45px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .tree-branch:hover .branch-connector {
+            background: #00bfff;
+        }
+
+        /* Sub Nodes Container */
+        .sub-nodes {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .sub-node {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            position: relative;
+        }
+
+        /* Connection Line for Sub Nodes */
+        .sub-node::before {
+            content: '';
+            position: absolute;
+            left: -60px;
+            top: 35px;
+            width: 30px;
+            height: 2px;
+            background: #2a3447;
+            transition: background 0.3s ease;
+        }
+
+        .sub-node:hover::before,
+        .tree-branch:hover .sub-node::before {
+            background: #00bfff;
+        }
+
+        .sub-node .node-content {
+            min-width: 160px;
+            background: #1e2535;
+            border: 1px solid #2a3447;
+            border-radius: 6px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sub-node:hover .node-content {
+            background: #2a3447;
+            border-color: #00bfff;
+            transform: translateX(5px);
+            box-shadow: 0 2px 12px rgba(0, 191, 255, 0.2);
+        }
+
+        .sub-node .node-title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: #e1e4ea;
+            margin-bottom: 0.375rem;
+        }
+
+        .sub-node .node-count {
+            font-size: 0.8125rem;
+            color: #8b92a8;
+        }
+
+        /* Leaf Connector */
+        .leaf-connector {
+            width: 40px;
+            height: 2px;
+            background: #2a3447;
+            margin-top: 28px;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .sub-node:hover .leaf-connector {
+            background: #00bfff;
+        }
+
+        /* Leaf Nodes Container */
+        .leaf-nodes {
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .sub-node:hover .leaf-nodes {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .leaf-node {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #0a0e1a;
+            border: 1px solid #1e2535;
+            border-radius: 4px;
+            padding: 0.625rem 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            min-width: 280px;
+        }
+
+        .leaf-node:hover {
+            background: #151b2e;
+            border-color: #00bfff;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 191, 255, 0.15);
+        }
+
+        .leaf-id {
+            font-size: 0.8125rem;
+            color: #00bfff;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .leaf-team {
+            font-size: 0.75rem;
+            color: #8b92a8;
+            background: #1e2535;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        .leaf-location {
+            font-size: 0.75rem;
+            color: #8b92a8;
+            background: #1e2535;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        .leaf-node:hover .leaf-id {
+            color: #33ccff;
+        }
+
+        .leaf-node:hover .leaf-team,
+        .leaf-node:hover .leaf-location {
+            background: #2a3447;
+            color: #e1e4ea;
+        }
+
+        /* Vertical connector for sub-nodes */
+        .sub-nodes::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 35px;
+            bottom: 35px;
+            width: 2px;
+            background: #2a3447;
+            transition: background 0.3s ease;
+        }
+
+        .tree-branch:hover .sub-nodes::before {
+            background: #00bfff;
+        }
+
+        /* Animation for leaf nodes appearing */
+        @keyframes slideInLeaf {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .sub-node:hover .leaf-node {
+            animation: slideInLeaf 0.3s ease forwards;
+        }
+
+        .sub-node:hover .leaf-node:nth-child(1) { animation-delay: 0s; }
+        .sub-node:hover .leaf-node:nth-child(2) { animation-delay: 0.05s; }
+        .sub-node:hover .leaf-node:nth-child(3) { animation-delay: 0.1s; }
+        .sub-node:hover .leaf-node:nth-child(4) { animation-delay: 0.15s; }
+        .sub-node:hover .leaf-node:nth-child(5) { animation-delay: 0.2s; }
+        .sub-node:hover .leaf-node:nth-child(6) { animation-delay: 0.25s; }
+        .sub-node:hover .leaf-node:nth-child(7) { animation-delay: 0.3s; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #151b2e;
+            border: 1px solid #2a3447;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #1e2535;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            background: #0f1320;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title-section h2 {
+            font-size: 1.5rem;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .modal-meta-badge {
+            background: #1e2535;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            color: #8b92a8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #8b92a8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #00bfff;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .aar-section {
+            margin-bottom: 2rem;
+        }
+
+        .aar-section h3 {
+            font-size: 1.125rem;
+            color: #00bfff;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .aar-section p {
+            color: #b0b5c2;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .aar-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .aar-section li {
+            color: #b0b5c2;
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .aar-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #00bfff;
+            font-weight: bold;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: #0a0e1a;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #8b92a8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 0.9375rem;
+            color: #e1e4ea;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+        }
+
+        .status-critical {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .status-resolved {
+            background: rgba(68, 255, 68, 0.2);
+            color: #44ff44;
+        }
+
+        .status-pending {
+            background: rgba(212, 160, 23, 0.2);
+            color: #d4a017;
+        }
+
+        .recommendation-box {
+            background: #1e3a52;
+            border-left: 4px solid #00bfff;
+            padding: 1.25rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .recommendation-box h4 {
+            color: #00bfff;
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .recommendation-box p,
+        .recommendation-box li {
+            color: #b0b5c2;
+        }
+
+        .mockup-banner {
+            background: linear-gradient(135deg, rgba(212, 160, 23, 0.15), rgba(212, 160, 23, 0.05));
+            border: 2px dashed #d4a017;
+            border-radius: 6px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .mockup-banner h4 {
+            color: #d4a017;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mockup-banner p {
+            color: #8b92a8;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        /* PDF Viewer Styles */
+        .pdf-viewer-container {
+            background: #525659;
+            padding: 2rem;
+            border-radius: 0;
+            min-height: 80vh;
+        }
+
+        .pdf-toolbar {
+            background: #323639;
+            padding: 0.75rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .pdf-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .pdf-btn {
+            background: #474a4d;
+            border: 1px solid #5a5d60;
+            color: #e1e4ea;
+            padding: 0.375rem 0.75rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pdf-btn:hover {
+            background: #5a5d60;
+        }
+
+        .pdf-page-info {
+            color: #b0b5c2;
+            font-size: 0.75rem;
+        }
+
+        .pdf-document {
+            background: #ffffff;
+            max-width: 850px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            font-family: 'Times New Roman', Times, serif;
+            color: #000000;
+        }
+
+        .pdf-page {
+            padding: 1in;
+            min-height: 11in;
+            box-sizing: border-box;
+        }
+
+        .pdf-header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .pdf-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .pdf-logo {
+            font-weight: bold;
+            font-size: 1.125rem;
+            letter-spacing: 2px;
+        }
+
+        .pdf-classification {
+            background: #000;
+            color: #fff;
+            padding: 0.125rem 0.5rem;
+            font-size: 0.625rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .pdf-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0 0.25rem 0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .pdf-subtitle {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pdf-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .pdf-info-table td {
+            border: 1px solid #000;
+            padding: 0.375rem 0.625rem;
+        }
+
+        .pdf-info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+            background: #f0f0f0;
+        }
+
+        .pdf-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .pdf-section-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            padding-bottom: 0.25rem;
+        }
+
+        .pdf-text {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            text-align: justify;
+        }
+
+        .pdf-list {
+            margin: 0.5rem 0;
+            padding-left: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .pdf-list li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .pdf-footer {
+            margin-top: 2rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #000;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+        }
+
+        .pdf-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 6rem;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.05);
+            pointer-events: none;
+            user-select: none;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Override modal for PDF mode */
+        .modal-content.pdf-mode {
+            max-width: 95vw;
+            background: #525659;
+            border-radius: 0;
+        }
+
+        .modal-content.pdf-mode .modal-header {
+            display: none;
+        }
+
+        .modal-content.pdf-mode .modal-body {
+            padding: 0;
+            background: #525659;
+        }
+
+        .pdf-close-btn {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .pdf-close-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">HALDUNE</div>
+            <div class="app-title">
+                <h1>E-AAR</h1>
+                <p>Electronic After-Action Review</p>
+            </div>
+        </div>
+        <div class="user-section">
+            <div class="user-badge">Admin</div>
+            <button class="btn btn-secondary">+</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="nav-item">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <span>📄</span>
+                <span>Global Docs</span>
+            </div>
+            <div class="nav-item">
+                <span>💬</span>
+                <span>Debriefs</span>
+            </div>
+            <div class="nav-item active">
+                <span>💡</span>
+                <span>Lessons Learned</span>
+            </div>
+            <div class="nav-item">
+                <span>📑</span>
+                <span>PDF Templates</span>
+            </div>
+            <div class="nav-item">
+                <span>🏢</span>
+                <span>Divisions</span>
+            </div>
+            <div class="nav-item">
+                <span>👥</span>
+                <span>Personnel</span>
+            </div>
+            <div class="nav-item">
+                <span>⚙️</span>
+                <span>Config</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Lessons Learned</h2>
+                <p>Aggregated insights and lessons extracted from multiple after-action reviews.</p>
+            </div>
+
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Time Period</label>
+                        <select>
+                            <option>Last 30 days</option>
+                            <option>Last 3 months</option>
+                            <option>Last 6 months</option>
+                            <option>Last 12 months</option>
+                            <option>All time</option>
+                            <option>Custom range...</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Mission Type</label>
+                        <select>
+                            <option>All mission types</option>
+                            <option>Reconnaissance</option>
+                            <option>Direct Action</option>
+                            <option>Training Exercise</option>
+                            <option>Special Reconnaissance</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Division</label>
+                        <select>
+                            <option>All divisions</option>
+                            <option>Alpha Team</option>
+                            <option>Bravo Team</option>
+                            <option>Charlie Team</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Category</label>
+                        <select>
+                            <option>All categories</option>
+                            <option>Communications</option>
+                            <option>Equipment</option>
+                            <option>Tactics</option>
+                            <option>Leadership</option>
+                            <option>Coordination</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary">Apply Filters</button>
+                    <button class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+
+            <!-- Key Insights Summary -->
+            <div class="insights-summary">
+                <div class="insight-card critical">
+                    <div class="insight-header">
+                        <div class="insight-label">CRITICAL ISSUE</div>
+                        <div class="insight-count">12 occurrences</div>
+                    </div>
+                    <div class="insight-title">Communication Breakdown</div>
+                    <div class="insight-detail">Primarily in wooded terrain • Affects Alpha, Bravo, Charlie teams</div>
+                </div>
+
+                <div class="insight-card warning">
+                    <div class="insight-header">
+                        <div class="insight-label">HIGH FREQUENCY</div>
+                        <div class="insight-count">9 occurrences</div>
+                    </div>
+                    <div class="insight-title">Equipment Failures</div>
+                    <div class="insight-detail">NVG battery issues • Charlie Team most affected</div>
+                </div>
+
+                <div class="insight-card trending">
+                    <div class="insight-header">
+                        <div class="insight-label">TRENDING UP</div>
+                        <div class="insight-count">+67%</div>
+                    </div>
+                    <div class="insight-title">Overall Issue Rate</div>
+                    <div class="insight-detail">From 9 issues in Aug to 15 in Nov</div>
+                </div>
+            </div>
+
+            <!-- Interactive Issue Tree -->
+            <div class="issue-tree-section">
+                <div class="section-header">
+                    <div>
+                        <h3>Issue Hierarchy</h3>
+                        <p>Explore patterns by category, team, or region</p>
+                    </div>
+                    <div class="tree-controls">
+                        <label for="hierarchy-view">View by:</label>
+                        <select id="hierarchy-view" class="hierarchy-select">
+                            <option value="category" selected>Issue Category</option>
+                            <option value="team">Team</option>
+                            <option value="region">Region</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Category View (Default) -->
+                <div class="tree-container" id="tree-category">
+                    <!-- Communications Branch -->
+                    <div class="tree-branch">
+                        <div class="root-node" data-category="communications">
+                            <div class="node-content">
+                                <div class="node-title">Communications</div>
+                                <div class="node-count">12 issues</div>
+                            </div>
+                        </div>
+                        
+                        <div class="branch-connector"></div>
+                        
+                        <div class="sub-nodes">
+                            <div class="sub-node" data-sub="comms-radio">
+                                <div class="node-content">
+                                    <div class="node-title">Radio Failure</div>
+                                    <div class="node-count">7 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                        <div class="leaf-id">ReconDemoAug25</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Recon V3 Demo');">
+                                        <div class="leaf-id">Recon V3 Demo</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mountain Ex-14');">
+                                        <div class="leaf-id">Mountain Ex-14</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Mountain</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Patrol 08');">
+                                        <div class="leaf-id">Night Patrol 08</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Forest Recon 12');">
+                                        <div class="leaf-id">Forest Recon 12</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpine Ops 03');">
+                                        <div class="leaf-id">Alpine Ops 03</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Mountain</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Terrain Nav 19');">
+                                        <div class="leaf-id">Terrain Nav 19</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="comms-protocol">
+                                <div class="node-content">
+                                    <div class="node-title">Protocol Issues</div>
+                                    <div class="node-count">3 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Multi-Team Ex 07');">
+                                        <div class="leaf-id">Multi-Team Ex 07</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Ops 14');">
+                                        <div class="leaf-id">Joint Ops 14</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Combined Ex 21');">
+                                        <div class="leaf-id">Combined Ex 21</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="comms-backup">
+                                <div class="node-content">
+                                    <div class="node-title">Backup Comms</div>
+                                    <div class="node-count">2 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 11');">
+                                        <div class="leaf-id">Extended Patrol 11</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Mountain</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Long Range 06');">
+                                        <div class="leaf-id">Long Range 06</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Branch -->
+                    <div class="tree-branch">
+                        <div class="root-node" data-category="equipment">
+                            <div class="node-content">
+                                <div class="node-title">Equipment</div>
+                                <div class="node-count">9 issues</div>
+                            </div>
+                        </div>
+                        
+                        <div class="branch-connector"></div>
+                        
+                        <div class="sub-nodes">
+                            <div class="sub-node" data-sub="equip-nvg">
+                                <div class="node-content">
+                                    <div class="node-title">NVG Batteries</div>
+                                    <div class="node-count">6 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Ops Training');">
+                                        <div class="leaf-id">Night Ops Training</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 19');">
+                                        <div class="leaf-id">Extended Patrol 19</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Recon 08');">
+                                        <div class="leaf-id">Night Recon 08</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Darkness Ops 15');">
+                                        <div class="leaf-id">Darkness Ops 15</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Stealth Ex 22');">
+                                        <div class="leaf-id">Stealth Ex 22</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Movement 04');">
+                                        <div class="leaf-id">Night Movement 04</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="equip-gps">
+                                <div class="node-content">
+                                    <div class="node-title">GPS/Nav Issues</div>
+                                    <div class="node-count">2 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Map Reading 09');">
+                                        <div class="leaf-id">Map Reading 09</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Mountain</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Navigation Ex 16');">
+                                        <div class="leaf-id">Navigation Ex 16</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="equip-other">
+                                <div class="node-content">
+                                    <div class="node-title">Other Equipment</div>
+                                    <div class="node-count">1 case</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Gear Test 11');">
+                                        <div class="leaf-id">Gear Test 11</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Intel Lag Branch -->
+                    <div class="tree-branch">
+                        <div class="root-node" data-category="intel">
+                            <div class="node-content">
+                                <div class="node-title">Intel Lag</div>
+                                <div class="node-count">7 issues</div>
+                            </div>
+                        </div>
+                        
+                        <div class="branch-connector"></div>
+                        
+                        <div class="sub-nodes">
+                            <div class="sub-node" data-sub="intel-toc">
+                                <div class="node-content">
+                                    <div class="node-title">TOC Updates</div>
+                                    <div class="node-count">5 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('SR Mission Brief');">
+                                        <div class="leaf-id">SR Mission Brief</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Urban Patrol 22');">
+                                        <div class="leaf-id">Urban Patrol 22</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Intel Relay 18');">
+                                        <div class="leaf-id">Intel Relay 18</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Target Update 09');">
+                                        <div class="leaf-id">Target Update 09</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mission Coord 03');">
+                                        <div class="leaf-id">Mission Coord 03</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="intel-real-time">
+                                <div class="node-content">
+                                    <div class="node-title">Real-time Intel</div>
+                                    <div class="node-count">2 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Live Update 12');">
+                                        <div class="leaf-id">Live Update 12</div>
+                                        <div class="leaf-team">Bravo</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Dynamic Ops 07');">
+                                        <div class="leaf-id">Dynamic Ops 07</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coordination Branch -->
+                    <div class="tree-branch">
+                        <div class="root-node" data-category="coordination">
+                            <div class="node-content">
+                                <div class="node-title">Coordination</div>
+                                <div class="node-count">6 issues</div>
+                            </div>
+                        </div>
+                        
+                        <div class="branch-connector"></div>
+                        
+                        <div class="sub-nodes">
+                            <div class="sub-node" data-sub="coord-multi">
+                                <div class="node-content">
+                                    <div class="node-title">Multi-Element</div>
+                                    <div class="node-count">4 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Group Debrief Trauma');">
+                                        <div class="leaf-id">Group Debrief Trauma</div>
+                                        <div class="leaf-team">Mixed</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpha Team Ex-12');">
+                                        <div class="leaf-id">Alpha Team Ex-12</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Movement 08');">
+                                        <div class="leaf-id">Joint Movement 08</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Complex Op 15');">
+                                        <div class="leaf-id">Complex Op 15</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="sub-node" data-sub="coord-timing">
+                                <div class="node-content">
+                                    <div class="node-title">Timing Issues</div>
+                                    <div class="node-count">2 cases</div>
+                                </div>
+                                
+                                <div class="leaf-connector"></div>
+                                
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Sync Ops 11');">
+                                        <div class="leaf-id">Sync Ops 11</div>
+                                        <div class="leaf-team">Charlie</div>
+                                        <div class="leaf-location">Desert</div>
+                                    </a>
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Rehearsal Ex 05');">
+                                        <div class="leaf-id">Rehearsal Ex 05</div>
+                                        <div class="leaf-team">Delta</div>
+                                        <div class="leaf-location">Urban</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team View -->
+                <div class="tree-container" id="tree-team" style="display: none;">
+                    <div class="tree-branch">
+                        <div class="root-node">
+                            <div class="node-content">
+                                <div class="node-title">Alpha Team</div>
+                                <div class="node-count">10 issues</div>
+                            </div>
+                        </div>
+                        <div class="branch-connector"></div>
+                        <div class="sub-nodes">
+                            <div class="sub-node">
+                                <div class="node-content">
+                                    <div class="node-title">Communications</div>
+                                    <div class="node-count">5 cases</div>
+                                </div>
+                                <div class="leaf-connector"></div>
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                        <div class="leaf-id">ReconDemoAug25</div>
+                                        <div class="leaf-team">Radio Failure</div>
+                                        <div class="leaf-location">Wooded</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Region View -->
+                <div class="tree-container" id="tree-region" style="display: none;">
+                    <div class="tree-branch">
+                        <div class="root-node">
+                            <div class="node-content">
+                                <div class="node-title">Wooded Terrain</div>
+                                <div class="node-count">8 issues</div>
+                            </div>
+                        </div>
+                        <div class="branch-connector"></div>
+                        <div class="sub-nodes">
+                            <div class="sub-node">
+                                <div class="node-content">
+                                    <div class="node-title">Communications</div>
+                                    <div class="node-count">6 cases</div>
+                                </div>
+                                <div class="leaf-connector"></div>
+                                <div class="leaf-nodes">
+                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                        <div class="leaf-id">ReconDemoAug25</div>
+                                        <div class="leaf-team">Alpha</div>
+                                        <div class="leaf-location">Radio Failure</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Lessons Section -->
+            <div class="lessons-section">
+                <div class="section-header">
+                    <h3>Detailed Breakdown</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary">Group by Category</button>
+                        <button class="btn btn-secondary">Group by Team</button>
+                        <button class="btn btn-secondary">Group by Region</button>
+                    </div>
+                </div>
+
+                <!-- HIGH FREQUENCY ISSUE -->
+                <div class="lesson-item-enhanced">
+                    <div class="lesson-header-enhanced">
+                        <div class="frequency-badge critical">
+                            <div class="freq-number">12</div>
+                            <div class="freq-label-small">occurrences</div>
+                        </div>
+                        <div class="lesson-content">
+                            <div class="lesson-title-enhanced">
+                                Communication breakdown during exfiltration phase
+                            </div>
+                            <div class="lesson-meta-enhanced">
+                                <span class="meta-badge category">Communications</span>
+                                <span class="meta-badge">Recon Operations</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-body">
+                        <div class="pattern-summary">
+                            <div class="pattern-stat">
+                                <div class="stat-header">Affected Teams</div>
+                                <div class="stat-value">Alpha (5), Bravo (4), Charlie (3)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Primary Locations</div>
+                                <div class="stat-value">Wooded Terrain (6), Mountains (3)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Time Period</div>
+                                <div class="stat-value">Last 90 days</div>
+                            </div>
+                        </div>
+                        
+                        <div class="lesson-description">
+                            Multiple teams reported radio communication failures during exfiltration, particularly in wooded terrain. Primary frequency interference combined with inadequate backup communication protocols led to coordination delays averaging 8-12 minutes.
+                        </div>
+                        
+                        <div class="source-grid">
+                            <div class="source-header">Referenced in 12 hotwashes</div>
+                            <div class="source-tags">
+                                <a class="source-tag" onclick="openModal('ReconDemoAug25');" style="cursor: pointer;">ReconDemoAug25 <span class="team-tag">Alpha</span></a>
+                                <a class="source-tag" onclick="openModal('Recon V3 Demo');" style="cursor: pointer;">Recon V3 Demo <span class="team-tag">Bravo</span></a>
+                                <a class="source-tag" onclick="openModal('Mountain Ex-14');" style="cursor: pointer;">Mountain Ex-14 <span class="team-tag">Alpha</span></a>
+                                <a class="source-tag" onclick="openModal('Night Patrol 08');" style="cursor: pointer;">Night Patrol 08 <span class="team-tag">Charlie</span></a>
+                                <a class="source-tag" onclick="openModal('Forest Recon 12');" style="cursor: pointer;">Forest Recon 12 <span class="team-tag">Bravo</span></a>
+                                <button class="expand-btn">+7 more →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MEDIUM-HIGH FREQUENCY ISSUE -->
+                <div class="lesson-item-enhanced">
+                    <div class="lesson-header-enhanced">
+                        <div class="frequency-badge high">
+                            <div class="freq-number">9</div>
+                            <div class="freq-label-small">occurrences</div>
+                        </div>
+                        <div class="lesson-content">
+                            <div class="lesson-title-enhanced">
+                                Night vision equipment battery failures during extended operations
+                            </div>
+                            <div class="lesson-meta-enhanced">
+                                <span class="meta-badge category">Equipment</span>
+                                <span class="meta-badge">All mission types</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-body">
+                        <div class="pattern-summary">
+                            <div class="pattern-stat">
+                                <div class="stat-header">Affected Teams</div>
+                                <div class="stat-value">Charlie (5), Alpha (3), Bravo (1)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Primary Locations</div>
+                                <div class="stat-value">Desert (4), All other terrains (5)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Time Period</div>
+                                <div class="stat-value">Last 90 days</div>
+                            </div>
+                        </div>
+                        
+                        <div class="lesson-description">
+                            Extended operations (12+ hours) revealed inadequate spare battery allocation for NODs. Charlie Team particularly affected. Teams recommended carrying 3 spare batteries per operator rather than current standard of 2, with mandatory battery check at 6-hour mark.
+                        </div>
+                        
+                        <div class="source-grid">
+                            <div class="source-header">Referenced in 9 hotwashes</div>
+                            <div class="source-tags">
+                                <a class="source-tag" onclick="openModal('ReconDemoAug25');" style="cursor: pointer;">ReconDemoAug25 <span class="team-tag">Charlie</span></a>
+                                <a class="source-tag" onclick="openModal('Night Ops Training');" style="cursor: pointer;">Night Ops Training <span class="team-tag">Charlie</span></a>
+                                <a class="source-tag" onclick="openModal('Extended Patrol 19');" style="cursor: pointer;">Extended Patrol 19 <span class="team-tag">Alpha</span></a>
+                                <button class="expand-btn">+6 more →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MEDIUM FREQUENCY ISSUE -->
+                <div class="lesson-item-enhanced">
+                    <div class="lesson-header-enhanced">
+                        <div class="frequency-badge medium">
+                            <div class="freq-number">7</div>
+                            <div class="freq-label-small">occurrences</div>
+                        </div>
+                        <div class="lesson-content">
+                            <div class="lesson-title-enhanced">
+                                Intelligence update lag during time-sensitive operations
+                            </div>
+                            <div class="lesson-meta-enhanced">
+                                <span class="meta-badge category">Coordination</span>
+                                <span class="meta-badge">Special Reconnaissance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-body">
+                        <div class="pattern-summary">
+                            <div class="pattern-stat">
+                                <div class="stat-header">Affected Teams</div>
+                                <div class="stat-value">Bravo (4), Alpha (2), Delta (1)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Primary Locations</div>
+                                <div class="stat-value">Urban (3), Desert (2), Other (2)</div>
+                            </div>
+                            <div class="pattern-stat">
+                                <div class="stat-header">Time Period</div>
+                                <div class="stat-value">Last 3 months</div>
+                            </div>
+                        </div>
+                        
+                        <div class="lesson-description">
+                            Intelligence updates from TOC to ground elements averaged 15-20 minute delay. Teams identified need for dedicated intelligence liaison in TOC with direct comms to element leaders for time-sensitive intelligence updates.
+                        </div>
+                        
+                        <div class="source-grid">
+                            <div class="source-header">Referenced in 7 hotwashes</div>
+                            <div class="source-tags">
+                                <a class="source-tag" onclick="openModal('Recon V3 Demo');" style="cursor: pointer;">Recon V3 Demo <span class="team-tag">Bravo</span></a>
+                                <a class="source-tag" onclick="openModal('SR Mission Brief');" style="cursor: pointer;">SR Mission Brief <span class="team-tag">Bravo</span></a>
+                                <a class="source-tag" onclick="openModal('Urban Patrol 22');" style="cursor: pointer;">Urban Patrol 22 <span class="team-tag">Alpha</span></a>
+                                <button class="expand-btn">+4 more →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <button class="btn btn-secondary">Select Lessons</button>
+                    <button class="btn btn-primary">Generate Consolidated Report</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Popup -->
+    <div class="modal-overlay" id="aarModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 id="modalTitle">After-Action Review</h2>
+                    <div class="modal-meta" id="modalMeta"></div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Hotwash Database
+        const hotwashDatabase = {
+            "Night Ops Training": {
+                title: "Night Ops Training Exercise",
+                missionId: "NVG-2024-11-01",
+                date: "November 1, 2024",
+                team: "Charlie Team",
+                location: "Desert Training Facility, Sector 7",
+                missionType: "Night Operations Training",
+                duration: "14 hours (1900-0900)",
+                personnel: "12 operators",
+                status: "critical",
+                
+                executiveSummary: "Extended night operations training exercise revealed critical NVG battery management issues. Multiple operators experienced complete battery failure between hours 10-12, resulting in degraded operational capability and early termination of live-fire exercises.",
+                
+                whatWasPlanned: [
+                    "14-hour continuous night operations exercise",
+                    "Navigation through rough terrain using NVGs",
+                    "Live-fire exercises in low-light conditions",
+                    "Communications relay practice under blackout conditions"
+                ],
+                
+                whatHappened: [
+                    "Initial 8 hours proceeded as planned with full team capability",
+                    "At hour 10, 3 operators reported NVG battery warnings",
+                    "By hour 12, 5 operators had complete NVG battery failure",
+                    "Team was forced to pause operations and redistribute remaining functional NVGs",
+                    "Live-fire portion postponed due to safety concerns",
+                    "Mission concluded 4 hours early"
+                ],
+                
+                rootCause: "Current SOP allocates 2 spare batteries per operator for extended operations. Analysis revealed that cold desert temperatures (12°F/-11°C) reduced battery life by approximately 40%. Combined with the 14-hour duration, this created a critical shortfall.",
+                
+                immediateActions: [
+                    "Redistributed functional NVGs among team members",
+                    "Implemented buddy system for navigation",
+                    "Adjusted exercise parameters to accommodate reduced capability",
+                    "Coordinated early extraction with TOC"
+                ],
+                
+                lessonsLearned: [
+                    "Current 2-battery standard insufficient for operations exceeding 10 hours in extreme temperatures",
+                    "No contingency plan existed for widespread NVG failure during extended ops",
+                    "Battery performance significantly degraded below 20°F",
+                    "Pre-mission battery testing did not account for temperature impact"
+                ],
+                
+                recommendations: [
+                    "Increase spare battery allocation to 4 per operator for extended ops (12+ hours)",
+                    "Implement temperature-adjusted battery planning guidelines",
+                    "Add mandatory battery check at 6-hour mark for extended operations",
+                    "Develop and train on backup procedures for widespread NVG failure",
+                    "Procure cold-weather battery pouches to maintain optimal temperature",
+                    "Update pre-mission checklist to include cold-weather battery testing"
+                ]
+            },
+            
+            "Extended Patrol 19": {
+                title: "Extended Patrol 19",
+                missionId: "EP-2024-10-15",
+                date: "October 15, 2024",
+                team: "Alpha Team",
+                location: "Desert Region, Zone 4",
+                missionType: "Long-Range Reconnaissance",
+                duration: "16 hours (1700-0900)",
+                personnel: "8 operators",
+                status: "critical",
+                
+                executiveSummary: "Long-range reconnaissance patrol encountered NVG battery depletion during critical observation phase. Primary and backup batteries exhausted by hour 13, forcing 3 operators to conduct final 3 hours of mission with degraded night vision capability.",
+                
+                whatWasPlanned: [
+                    "16-hour reconnaissance patrol with 12 hours under night conditions",
+                    "Establish observation post overlooking target area",
+                    "Continuous surveillance of target facility from 2200-0600",
+                    "Covert exfiltration at first light"
+                ],
+                
+                whatHappened: [
+                    "Team successfully established OP at planned location by 2200",
+                    "Continuous NVG use required due to moonless conditions",
+                    "First battery failures occurred at hour 11 (0400)",
+                    "By hour 13 (0600), 3 operators exhausted all batteries",
+                    "Final surveillance period compromised as team had to rotate remaining functional NVGs",
+                    "Exfiltration conducted with reduced situational awareness"
+                ],
+                
+                rootCause: "Mission planning underestimated continuous NVG usage requirements. Original estimate assumed 8-10 hours of NVG use, but moonless conditions and extended surveillance window required nearly 12 hours of continuous operation. Standard 2-battery loadout proved insufficient.",
+                
+                immediateActions: [
+                    "Consolidated remaining functional NVGs to key personnel",
+                    "Implemented rotational NVG sharing protocol",
+                    "Adjusted observation sectors to accommodate reduced capability",
+                    "Maintained mission objectives despite equipment limitations"
+                ],
+                
+                lessonsLearned: [
+                    "Moon phase planning critical for NVG-dependent operations",
+                    "Static observation posts require more battery capacity than mobile patrols",
+                    "Continuous NVG operation drains batteries 30% faster than intermittent use",
+                    "No clear TTPs exist for NVG sharing during battery shortage",
+                    "Weather forecasting should include moon phase/illumination data"
+                ],
+                
+                recommendations: [
+                    "Increase battery allocation to 3-4 per operator for static observation missions",
+                    "Incorporate moon phase/illumination into mission planning checklist",
+                    "Develop standardized procedures for NVG sharing during equipment failures",
+                    "Consider adding solar charging capability to sustainment equipment",
+                    "Train on passive night observation techniques as backup to NVGs",
+                    "Add battery consumption rates to mission planning factors"
+                ]
+            },
+            
+            "Night Recon 08": {
+                title: "Night Recon 08",
+                missionId: "NR-2024-09-22",
+                date: "September 22, 2024",
+                team: "Charlie Team",
+                location: "Urban Environment, Training Site 3",
+                missionType: "Urban Night Reconnaissance",
+                duration: "10 hours (2000-0600)",
+                personnel: "10 operators",
+                status: "critical",
+                
+                executiveSummary: "Urban reconnaissance exercise revealed NVG battery vulnerability during extended operations in built-up areas. Four operators experienced battery failure during critical infiltration phase, creating gaps in perimeter security and forcing adaptation of assault plan.",
+                
+                whatWasPlanned: [
+                    "10-hour urban reconnaissance and room clearing exercise",
+                    "Systematic clearance of multi-story structure",
+                    "Continuous surveillance of multiple entry points",
+                    "Coordinated movement through confined spaces under NVGs"
+                ],
+                
+                whatHappened: [
+                    "Initial infiltration and exterior reconnaissance successful (hours 1-4)",
+                    "Interior operations began at hour 5 (0100)",
+                    "First NVG battery failure at hour 7 (0300) during critical room clearing",
+                    "Three additional failures within 45 minutes",
+                    "Team forced to consolidate into smaller clearing teams",
+                    "Exercise timeline extended by 2 hours to complete objectives",
+                    "One operator sustained minor injury due to reduced depth perception"
+                ],
+                
+                rootCause: "Urban operations require significantly more frequent NVG adjustment and increased power drain due to varying light conditions (ambient city lights, interior darkness). The standard battery allocation of 2 spares was based on open terrain operations and did not account for 40% increased consumption in urban environments.",
+                
+                immediateActions: [
+                    "Regrouped team and redistributed functional NVGs",
+                    "Modified clearing procedures to accommodate reduced team size",
+                    "Positioned operators with functional NVGs at critical breach points",
+                    "Increased verbal communication to compensate for visual limitations",
+                    "Slowed operational tempo to maintain safety"
+                ],
+                
+                lessonsLearned: [
+                    "Urban operations consume NVG batteries 40% faster than open terrain",
+                    "Varying light conditions (streetlights, vehicle lights) require constant NVG adjustment",
+                    "Interior/exterior transitions create additional battery drain",
+                    "Room clearing requires sustained maximum NVG output",
+                    "Battery failure during room clearing creates significant safety hazard",
+                    "Standard loadout planning does not differentiate by terrain type"
+                ],
+                
+                recommendations: [
+                    "Establish separate battery allocation standards for urban operations (minimum 3 spares)",
+                    "Include terrain-specific battery consumption factors in planning",
+                    "Conduct pre-mission NVG battery load testing under similar light conditions",
+                    "Position spare batteries at tactical pause locations during urban ops",
+                    "Develop urban-specific contingency procedures for NVG failure",
+                    "Add NVG battery status to periodic SITREP requirements",
+                    "Consider helmet-mounted battery status indicators for team leaders"
+                ]
+            },
+            
+            "Darkness Ops 15": {
+                title: "Darkness Ops 15",
+                missionId: "DO-2024-08-30",
+                date: "August 30, 2024",
+                team: "Charlie Team",
+                location: "Wooded Terrain, Training Area 12",
+                missionType: "Covert Movement Exercise",
+                duration: "12 hours (1900-0700)",
+                personnel: "8 operators",
+                status: "critical",
+                
+                executiveSummary: "Covert movement exercise through heavily wooded terrain exposed critical NVG battery planning deficiency. Dense canopy required maximum NVG gain settings, accelerating battery depletion by 50%. Five operators exhausted batteries by hour 9, significantly compromising mission effectiveness and safety.",
+                
+                whatWasPlanned: [
+                    "12-hour covert insertion through dense forest",
+                    "Navigate 15km through challenging terrain with minimal signature",
+                    "Establish patrol base in target area",
+                    "Conduct surveillance of simulated enemy position"
+                ],
+                
+                whatHappened: [
+                    "Movement began on schedule with full team capability",
+                    "Dense forest canopy required maximum NVG gain from start",
+                    "Slower than planned movement through thick vegetation (8km in 6 hours vs planned 12km)",
+                    "First battery failures at hour 7 (0200)",
+                    "By hour 9 (0400), 5 operators had complete NVG failure",
+                    "Team halted movement and established hasty defensive position",
+                    "Waited for daylight to continue movement without NVGs",
+                    "Arrived at objective 4 hours behind schedule"
+                ],
+                
+                rootCause: "Wooded terrain with dense canopy required continuous maximum gain NVG operation, resulting in 50% faster battery consumption than standard planning factors. Additionally, difficult terrain slowed movement pace, extending the planned timeline and further exacerbating battery shortage. Standard 2-battery allocation was based on moderate terrain and moderate NVG usage.",
+                
+                immediateActions: [
+                    "Established hasty defensive position with remaining NVG-capable operators on perimeter",
+                    "Consolidated functional NVGs for security rotation",
+                    "Informed TOC of situation and adjusted timeline",
+                    "Made tactical decision to pause movement until dawn",
+                    "Conducted daylight movement to objective (reduced stealth but safer)"
+                ],
+                
+                lessonsLearned: [
+                    "Dense forest operations require maximum NVG gain, drastically increasing power consumption",
+                    "Difficult terrain extends mission timeline, compounding battery shortage",
+                    "No backup procedures exist for night movement when NVG capability lost",
+                    "Planning factors don't account for terrain-specific NVG power requirements",
+                    "Battery conservation techniques not part of standard training",
+                    "Loss of night vision capability creates significant tactical vulnerability"
+                ],
+                
+                recommendations: [
+                    "Establish terrain-specific battery allocation: Wooded terrain minimum 4 spares per operator",
+                    "Add terrain canopy density as planning factor for battery requirements",
+                    "Train operators on battery conservation techniques (gain management, periodic low-power modes)",
+                    "Develop TTPs for securing team during unexpected NVG failure",
+                    "Include backup navigation methods (passive night vision, compass-based) in training",
+                    "Add NVG battery status checks at tactical pause points",
+                    "Consider cache/resupply points for extended operations in difficult terrain",
+                    "Update risk assessment to include NVG battery failure as significant threat"
+                ]
+            }
+        };
+
+        // Generate generic AAR for missions without specific data
+        function createGenericAAR(missionName) {
+            return {
+                title: missionName + " [MOCKUP]",
+                missionId: "[Sample Data]",
+                date: "[Date]",
+                team: "[Team Name]",
+                location: "[Location]",
+                missionType: "[Mission Type]",
+                duration: "[Duration]",
+                personnel: "[Personnel Count]",
+                status: "pending",
+                
+                executiveSummary: "[Executive summary would appear here - brief overview of the mission outcome and key findings]",
+                
+                whatWasPlanned: [
+                    "[Planned objective 1]",
+                    "[Planned objective 2]",
+                    "[Planned objective 3]"
+                ],
+                
+                whatHappened: [
+                    "[Actual event 1]",
+                    "[Actual event 2]",
+                    "[Actual event 3]",
+                    "[Actual event 4]"
+                ],
+                
+                rootCause: "[Root cause analysis would be detailed here - explaining the underlying factors that contributed to the issue]",
+                
+                immediateActions: [
+                    "[Immediate action taken 1]",
+                    "[Immediate action taken 2]",
+                    "[Immediate action taken 3]"
+                ],
+                
+                lessonsLearned: [
+                    "[Lesson learned 1]",
+                    "[Lesson learned 2]",
+                    "[Lesson learned 3]",
+                    "[Lesson learned 4]"
+                ],
+                
+                recommendations: [
+                    "[Recommendation 1]",
+                    "[Recommendation 2]",
+                    "[Recommendation 3]",
+                    "[Recommendation 4]"
+                ]
+            };
+        }
+
+        // Modal Functions
+        function openModal(missionName) {
+            const modal = document.getElementById('aarModal');
+            const modalContent = modal.querySelector('.modal-content');
+            let data = hotwashDatabase[missionName];
+            let isMockup = false;
+            
+            // If no specific data exists, create a generic placeholder
+            if (!data) {
+                data = createGenericAAR(missionName);
+                isMockup = true;
+            }
+            
+            let bodyHtml = '';
+            
+            if (isMockup) {
+                // PDF Mode for mockups
+                modalContent.classList.add('pdf-mode');
+                
+                const cleanTitle = data.title.replace(' [MOCKUP]', '');
+                
+                bodyHtml = `
+                    <div class="pdf-viewer-container">
+                        <div class="pdf-toolbar">
+                            <div class="pdf-controls">
+                                <button class="pdf-btn" disabled>🔍 Zoom In</button>
+                                <button class="pdf-btn" disabled>🔍 Zoom Out</button>
+                                <button class="pdf-btn" disabled>⬅ Previous</button>
+                                <button class="pdf-btn" disabled>➡ Next</button>
+                                <span class="pdf-page-info">Page 1 of 1</span>
+                            </div>
+                            <button class="pdf-close-btn" onclick="closeModal()">✕ Close Document</button>
+                        </div>
+                        
+                        <div class="pdf-document">
+                            <div class="pdf-watermark">SAMPLE</div>
+                            <div class="pdf-page">
+                                <div class="pdf-header">
+                                    <div class="pdf-header-top">
+                                        <div class="pdf-logo">HALDUNE</div>
+                                        <div class="pdf-classification">SAMPLE REPORT</div>
+                                    </div>
+                                    <div class="pdf-title">After-Action Review</div>
+                                    <div class="pdf-subtitle">${cleanTitle}</div>
+                                </div>
+                                
+                                <table class="pdf-info-table">
+                                    <tr>
+                                        <td>Mission ID:</td>
+                                        <td>${data.missionId}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date:</td>
+                                        <td>${data.date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Team:</td>
+                                        <td>${data.team}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Location:</td>
+                                        <td>${data.location}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mission Type:</td>
+                                        <td>${data.missionType}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Duration:</td>
+                                        <td>${data.duration}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Personnel:</td>
+                                        <td>${data.personnel}</td>
+                                    </tr>
+                                </table>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">I. Executive Summary</div>
+                                    <div class="pdf-text">${data.executiveSummary}</div>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">II. What Was Planned</div>
+                                    <ul class="pdf-list">
+                                        ${data.whatWasPlanned.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">III. What Actually Happened</div>
+                                    <ul class="pdf-list">
+                                        ${data.whatHappened.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">IV. Root Cause Analysis</div>
+                                    <div class="pdf-text">${data.rootCause}</div>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">V. Immediate Actions Taken</div>
+                                    <ul class="pdf-list">
+                                        ${data.immediateActions.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">VI. Lessons Learned</div>
+                                    <ul class="pdf-list">
+                                        ${data.lessonsLearned.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="pdf-section">
+                                    <div class="pdf-section-title">VII. Recommendations</div>
+                                    <ul class="pdf-list">
+                                        ${data.recommendations.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="pdf-footer">
+                                    <div>HALDUNE E-AAR System | Generated: ${new Date().toLocaleDateString()}</div>
+                                    <div>Page 1 of 1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Regular modal mode for detailed AARs
+                modalContent.classList.remove('pdf-mode');
+                
+                // Set title
+                document.getElementById('modalTitle').textContent = data.title;
+                
+                // Set meta badges
+                const metaHtml = `
+                    <span class="modal-meta-badge">📅 ${data.date}</span>
+                    <span class="modal-meta-badge">👥 ${data.team}</span>
+                    <span class="modal-meta-badge">📍 ${data.location}</span>
+                    <span class="modal-meta-badge">⏱️ ${data.duration}</span>
+                `;
+                document.getElementById('modalMeta').innerHTML = metaHtml;
+                
+                bodyHtml = `
+                    <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Mission ID</div>
+                        <div class="info-value">${data.missionId}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Mission Type</div>
+                        <div class="info-value">${data.missionType}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Personnel</div>
+                        <div class="info-value">${data.personnel}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">
+                            <span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>Executive Summary</h3>
+                    <p>${data.executiveSummary}</p>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>What Was Planned</h3>
+                    <ul>
+                        ${data.whatWasPlanned.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>What Actually Happened</h3>
+                    <ul>
+                        ${data.whatHappened.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>Root Cause Analysis</h3>
+                    <p>${data.rootCause}</p>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>Immediate Actions Taken</h3>
+                    <ul>
+                        ${data.immediateActions.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>Lessons Learned</h3>
+                    <ul>
+                        ${data.lessonsLearned.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="aar-section">
+                    <h3>Recommendations</h3>
+                    <div class="recommendation-box">
+                        <h4>Recommended Actions</h4>
+                        <ul>
+                            ${data.recommendations.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                `;
+            }
+            
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            
+            // Show modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('aarModal');
+            const modalContent = modal.querySelector('.modal-content');
+            modal.classList.remove('active');
+            modalContent.classList.remove('pdf-mode');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('aarModal').addEventListener('click', function(e) {
+            if (e.target === this || e.target.classList.contains('pdf-viewer-container')) {
+                closeModal();
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Hierarchy view switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const hierarchySelect = document.getElementById('hierarchy-view');
+            const categoryTree = document.getElementById('tree-category');
+            const teamTree = document.getElementById('tree-team');
+            const regionTree = document.getElementById('tree-region');
+            
+            hierarchySelect.addEventListener('change', function() {
+                // Hide all trees
+                categoryTree.style.display = 'none';
+                teamTree.style.display = 'none';
+                regionTree.style.display = 'none';
+                
+                // Show selected tree
+                switch(this.value) {
+                    case 'category':
+                        categoryTree.style.display = 'flex';
+                        break;
+                    case 'team':
+                        teamTree.style.display = 'flex';
+                        break;
+                    case 'region':
+                        regionTree.style.display = 'flex';
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

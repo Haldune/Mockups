@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-AAR - Lessons Learned Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e1a;
+            color: #e1e4ea;
+        }
+
+        .header {
+            background: #151b2e;
+            border-bottom: 1px solid #1e2535;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .app-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-title h1 {
+            color: #00bfff;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .app-title p {
+            color: #8b92a8;
+            font-size: 0.875rem;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            background: #1e2535;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            color: #e1e4ea;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #151b2e;
+            border-right: 1px solid #1e2535;
+            padding: 1.5rem 0;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #8b92a8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #1e2535;
+            color: #e1e4ea;
+        }
+
+        .nav-item.active {
+            background: #1e3a52;
+            color: #e1e4ea;
+            border-left: 3px solid #00bfff;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #1e2535;
+            background: #151b2e;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-header p {
+            color: #8b92a8;
+            font-size: 0.875rem;
+        }
+
+        .suggestions-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            background: #1e2535;
+            border: 1px solid #2a3447;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e1e4ea;
+        }
+
+        .suggestion-chip:hover {
+            background: #2a3447;
+            border-color: #00bfff;
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2a3447;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, #00bfff, #0099cc);
+            color: #0a0e1a;
+        }
+
+        .message.user .message-avatar {
+            background: #2a3447;
+            color: #e1e4ea;
+        }
+
+        .message-content {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            flex: 1;
+        }
+
+        .message.user .message-content {
+            background: #1e3a52;
+            border-color: #2a4a62;
+        }
+
+        .message-text {
+            color: #e1e4ea;
+            line-height: 1.6;
+            font-size: 0.9375rem;
+        }
+
+        .lesson-card {
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .lesson-card:hover {
+            border-color: #00bfff;
+            background: #0f1320;
+        }
+
+        .lesson-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .lesson-card-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #e1e4ea;
+        }
+
+        .lesson-frequency {
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff6b6b;
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .lesson-card-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-tag {
+            background: #1e2535;
+            color: #8b92a8;
+            padding: 0.25rem 0.625rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .lesson-card-description {
+            color: #b0b5c2;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .lesson-card-sources {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .source-link {
+            color: #00bfff;
+            font-size: 0.8125rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        .input-area {
+            padding: 1.5rem 2rem;
+            background: #151b2e;
+            border-top: 1px solid #1e2535;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            padding-right: 3rem;
+            color: #e1e4ea;
+            font-size: 0.9375rem;
+            resize: none;
+            min-height: 56px;
+            max-height: 200px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+
+        .chat-input::placeholder {
+            color: #5a6178;
+        }
+
+        .char-count {
+            position: absolute;
+            right: 1rem;
+            bottom: 0.875rem;
+            font-size: 0.75rem;
+            color: #5a6178;
+        }
+
+        .send-button {
+            background: #00bfff;
+            color: #0a0e1a;
+            border: none;
+            border-radius: 8px;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 56px;
+        }
+
+        .send-button:hover {
+            background: #33ccff;
+        }
+
+        .send-button:disabled {
+            background: #2a3447;
+            color: #5a6178;
+            cursor: not-allowed;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: #1e3a52;
+            border: 1px solid #00bfff;
+            color: #00bfff;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-tag-close {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00bfff;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .thinking-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .context-section {
+            background: #0a0e1a;
+            border: 1px solid #2a3447;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .context-header {
+            font-size: 0.8125rem;
+            color: #8b92a8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .context-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .context-item {
+            background: #151b2e;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #1e2535;
+        }
+
+        .context-label {
+            font-size: 0.75rem;
+            color: #8b92a8;
+            margin-bottom: 0.25rem;
+        }
+
+        .context-value {
+            font-size: 0.875rem;
+            color: #e1e4ea;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #8b92a8;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #e1e4ea;
+        }
+
+        .empty-state p {
+            font-size: 0.9375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .example-queries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .example-query {
+            background: #151b2e;
+            border: 1px solid #1e2535;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .example-query:hover {
+            border-color: #00bfff;
+            background: #1e2535;
+        }
+
+        .example-query-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #e1e4ea;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-query-text {
+            font-size: 0.8125rem;
+            color: #8b92a8;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">HALDUNE</div>
+            <div class="app-title">
+                <h1>E-AAR</h1>
+                <p>Electronic After-Action Review</p>
+            </div>
+        </div>
+        <div class="user-section">
+            <div class="user-badge">Admin</div>
+            <button class="send-button" style="height: auto; padding: 0.5rem 1rem;">+</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="nav-item">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <span>📄</span>
+                <span>Global Docs</span>
+            </div>
+            <div class="nav-item">
+                <span>💬</span>
+                <span>Debriefs</span>
+            </div>
+            <div class="nav-item active">
+                <span>💡</span>
+                <span>Lessons Learned</span>
+            </div>
+            <div class="nav-item">
+                <span>📑</span>
+                <span>PDF Templates</span>
+            </div>
+            <div class="nav-item">
+                <span>🏢</span>
+                <span>Divisions</span>
+            </div>
+            <div class="nav-item">
+                <span>👥</span>
+                <span>Personnel</span>
+            </div>
+            <div class="nav-item">
+                <span>⚙️</span>
+                <span>Config</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="chat-header">
+                <h2>Lessons Learned Assistant</h2>
+                <p>Ask questions about operational patterns, team-specific issues, or search for relevant lessons</p>
+                <div class="suggestions-bar">
+                    <div class="suggestion-chip" onclick="sendExample('What communication issues has Alpha Team experienced?')">
+                        Alpha Team comms
+                    </div>
+                    <div class="suggestion-chip" onclick="sendExample('Show equipment failures in desert terrain')">
+                        Desert equipment
+                    </div>
+                    <div class="suggestion-chip" onclick="sendExample('What are the most common coordination problems?')">
+                        Coordination issues
+                    </div>
+                    <div class="suggestion-chip" onclick="sendExample('Compare comms issues across all teams')">
+                        Compare teams
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-area" id="chatArea">
+                <div class="empty-state">
+                    <div class="empty-state-icon">💡</div>
+                    <h3>Search Across Lessons Learned</h3>
+                    <p>Ask about specific teams, locations, mission types, or describe your current situation</p>
+                    
+                    <div class="example-queries">
+                        <div class="example-query" onclick="sendExample('What communication issues has Alpha Team experienced in wooded terrain?')">
+                            <div class="example-query-title">Team + Location Query</div>
+                            <div class="example-query-text">What communication issues has Alpha Team experienced in wooded terrain?</div>
+                        </div>
+                        <div class="example-query" onclick="sendExample('We are planning a night operation in the desert with 3 elements. What should we watch out for?')">
+                            <div class="example-query-title">Situational Query</div>
+                            <div class="example-query-text">We're planning a night operation in the desert with 3 elements. What should we watch out for?</div>
+                        </div>
+                        <div class="example-query" onclick="sendExample('Show me all equipment failures related to NVGs')">
+                            <div class="example-query-title">Equipment-Specific</div>
+                            <div class="example-query-text">Show me all equipment failures related to NVGs</div>
+                        </div>
+                        <div class="example-query" onclick="sendExample('What lessons learned apply to multi-element operations in urban environments?')">
+                            <div class="example-query-title">Mission Type Query</div>
+                            <div class="example-query-text">What lessons apply to multi-element operations in urban environments?</div>
+                        </div>
+                        <div class="example-query" onclick="sendExample('Compare communication issues between Alpha and Bravo teams')">
+                            <div class="example-query-title">Comparative Analysis</div>
+                            <div class="example-query-text">Compare communication issues between Alpha and Bravo teams</div>
+                        </div>
+                        <div class="example-query" onclick="sendExample('What has been trending worse over the last 3 months?')">
+                            <div class="example-query-title">Trend Analysis</div>
+                            <div class="example-query-text">What has been trending worse over the last 3 months?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="chat-input" 
+                            id="chatInput"
+                            placeholder="Ask about lessons learned, search by team, location, or describe your situation..."
+                            rows="1"
+                        ></textarea>
+                        <span class="char-count" id="charCount">0/500</span>
+                    </div>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const chatInput = document.getElementById('chatInput');
+        const chatArea = document.getElementById('chatArea');
+        const charCount = document.getElementById('charCount');
+        const sendButton = document.getElementById('sendButton');
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+            
+            const count = this.value.length;
+            charCount.textContent = `${count}/500`;
+            
+            sendButton.disabled = count === 0;
+        });
+
+        // Send on Enter (Shift+Enter for new line)
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function clearEmptyState() {
+            const emptyState = chatArea.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+        }
+
+        function sendExample(text) {
+            chatInput.value = text;
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + 'px';
+            charCount.textContent = `${text.length}/500`;
+            sendButton.disabled = false;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            clearEmptyState();
+
+            // Add user message
+            addMessage(message, 'user');
+
+            // Clear input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            charCount.textContent = '0/500';
+            sendButton.disabled = true;
+
+            // Show thinking indicator
+            setTimeout(() => {
+                addThinkingIndicator();
+                
+                // Simulate response after delay
+                setTimeout(() => {
+                    removeThinkingIndicator();
+                    generateResponse(message);
+                }, 1500);
+            }, 300);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'user' ? 'U' : 'AI';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `<div class="message-text">${text}</div>`;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function addThinkingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            messageDiv.id = 'thinking';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = 'AI';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `
+                <div class="thinking-indicator">
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                </div>
+            `;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeThinkingIndicator() {
+            const thinking = document.getElementById('thinking');
+            if (thinking) thinking.remove();
+        }
+
+        function generateResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            // Determine response based on query
+            let response = '';
+            
+            if (lowerMessage.includes('alpha') && lowerMessage.includes('comm')) {
+                response = generateAlphaCommsResponse();
+            } else if (lowerMessage.includes('desert') && lowerMessage.includes('equipment')) {
+                response = generateDesertEquipmentResponse();
+            } else if (lowerMessage.includes('night') && lowerMessage.includes('desert')) {
+                response = generateNightDesertResponse();
+            } else if (lowerMessage.includes('nvg') || lowerMessage.includes('night vision')) {
+                response = generateNVGResponse();
+            } else if (lowerMessage.includes('compare') || lowerMessage.includes('comparison')) {
+                response = generateComparisonResponse();
+            } else if (lowerMessage.includes('trend') || lowerMessage.includes('trending')) {
+                response = generateTrendResponse();
+            } else if (lowerMessage.includes('urban') && lowerMessage.includes('multi-element')) {
+                response = generateUrbanMultiElementResponse();
+            } else if (lowerMessage.includes('coordination')) {
+                response = generateCoordinationResponse();
+            } else {
+                response = generateGenericResponse(userMessage);
+            }
+            
+            addAssistantMessage(response);
+        }
+
+        function addAssistantMessage(htmlContent) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = 'AI';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = htmlContent;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function generateAlphaCommsResponse() {
+            return `
+                <div class="message-text">
+                    I found <strong>5 communication-related incidents</strong> involving Alpha Team. Here's what the data shows:
+                </div>
+                
+                <div class="context-section">
+                    <div class="context-header">Search Context</div>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <div class="context-label">Team</div>
+                            <div class="context-value">Alpha Team</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Issue Category</div>
+                            <div class="context-value">Communications</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Total Incidents</div>
+                            <div class="context-value">5 occurrences</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Radio failure during exfiltration in wooded terrain</div>
+                        <div class="lesson-frequency">3×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Wooded Terrain</span>
+                        <span class="meta-tag">Radio Equipment</span>
+                        <span class="meta-tag">Exfil Phase</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        Alpha Team experienced primary frequency interference in dense wooded areas, particularly during exfiltration. Backup protocols were inadequate, leading to 8-12 minute coordination delays.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">ReconDemoAug25</a>
+                        <a class="source-link">Mountain Ex-14</a>
+                        <a class="source-link">Alpine Ops 03</a>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Protocol confusion during multi-team operations</div>
+                        <div class="lesson-frequency">1×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Urban</span>
+                        <span class="meta-tag">Multi-Team</span>
+                        <span class="meta-tag">Protocols</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        During urban operations with multiple elements, communication protocol was unclear, causing delays in decision-making loop.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">Multi-Team Ex 07</a>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Backup communication system failure</div>
+                        <div class="lesson-frequency">1×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Desert</span>
+                        <span class="meta-tag">Extended Range</span>
+                        <span class="meta-tag">Backup Systems</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        Long-range desert operation revealed inadequate backup comms when primary system failed. Team had to rely on visual signals.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">Long Range 06</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateDesertEquipmentResponse() {
+            return `
+                <div class="message-text">
+                    Found <strong>4 equipment-related issues</strong> in desert terrain. The dominant pattern is NVG battery failures.
+                </div>
+
+                <div class="context-section">
+                    <div class="context-header">Search Context</div>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <div class="context-label">Location</div>
+                            <div class="context-value">Desert Terrain</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Issue Category</div>
+                            <div class="context-value">Equipment</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Primary Issue</div>
+                            <div class="context-value">NVG Batteries</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">NVG battery failures during extended operations</div>
+                        <div class="lesson-frequency">4×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Night Operations</span>
+                        <span class="meta-tag">12+ Hour Ops</span>
+                        <span class="meta-tag">Charlie: 2×, Alpha: 2×</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        Desert operations exceeding 12 hours consistently experienced NVG battery depletion. Current loadout of 2 spare batteries per operator is insufficient. Recommendation: 3 spare batteries with mandatory check at 6-hour mark.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">Night Ops Training</a>
+                        <a class="source-link">Extended Patrol 19</a>
+                        <a class="source-link">Stealth Ex 22</a>
+                        <a class="source-link">Night Movement 04</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateNightDesertResponse() {
+            return `
+                <div class="message-text">
+                    Based on historical data, here are the key risks for night operations in desert terrain with multiple elements:
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">⚠️ Critical: NVG Battery Management</div>
+                        <div class="lesson-frequency">High Risk</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        4 past incidents of battery failures in desert night ops. Bring 3 spare batteries per operator and implement 6-hour battery checks. Extended operations (12+hrs) are particularly vulnerable.
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">⚠️ Coordination Challenges</div>
+                        <div class="lesson-frequency">Medium Risk</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        Multi-element operations require additional rehearsal time. Past incidents show 2 rehearsal cycles are insufficient for 3+ element operations. Recommend minimum 4 cycles to prevent synchronization errors.
+                    </div>
+                </div>
+
+                <div class="message-text" style="margin-top: 1rem;">
+                    Would you like me to pull specific debriefs from these incidents or generate a pre-mission brief document?
+                </div>
+            `;
+        }
+
+        function generateNVGResponse() {
+            return `
+                <div class="message-text">
+                    Found <strong>6 NVG-related equipment failures</strong> across all teams. Charlie Team is disproportionately affected.
+                </div>
+
+                <div class="context-section">
+                    <div class="context-header">Pattern Analysis</div>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <div class="context-label">Total Incidents</div>
+                            <div class="context-value">6 occurrences</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Most Affected</div>
+                            <div class="context-value">Charlie Team (4×)</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Primary Location</div>
+                            <div class="context-value">Desert (4×)</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Time Frame</div>
+                            <div class="context-value">Last 90 days</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Battery depletion pattern</div>
+                        <div class="lesson-frequency">6×</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        All incidents occurred during operations exceeding 12 hours. Current SOP of 2 spare batteries inadequate. Charlie Team recommended 3 spares with mandatory 6-hour check after multiple incidents.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Full incident list:</span>
+                        <a class="source-link">Night Ops Training</a>
+                        <a class="source-link">Extended Patrol 19</a>
+                        <a class="source-link">Night Recon 08</a>
+                        <a class="source-link">Darkness Ops 15</a>
+                        <a class="source-link">Stealth Ex 22</a>
+                        <a class="source-link">Night Movement 04</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateComparisonResponse() {
+            return `
+                <div class="message-text">
+                    Here's a comparison of communication issues between Alpha and Bravo teams:
+                </div>
+
+                <div class="context-section">
+                    <div class="context-header">Comparative Summary</div>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <div class="context-label">Alpha Team</div>
+                            <div class="context-value">5 comm incidents</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Bravo Team</div>
+                            <div class="context-value">4 comm incidents</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Common Issue</div>
+                            <div class="context-value">Radio failures</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">Key Difference</div>
+                            <div class="context-value">Terrain types</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-text" style="margin-top: 1rem;">
+                    <strong>Alpha Team:</strong> Issues concentrate in wooded and mountainous terrain (3/5 incidents). Primary issue is radio interference during exfiltration phases.
+                </div>
+
+                <div class="message-text">
+                    <strong>Bravo Team:</strong> More evenly distributed across terrain types. Two incidents related to protocol confusion in multi-team operations, suggesting coordination rather than equipment issues.
+                </div>
+
+                <div class="message-text">
+                    <strong>Recommendation:</strong> Alpha would benefit from terrain-specific comms training. Bravo needs clearer multi-team protocol documentation.
+                </div>
+            `;
+        }
+
+        function generateTrendResponse() {
+            return `
+                <div class="message-text">
+                    Analyzing trends over the last 3 months (Aug-Nov):
+                </div>
+
+                <div class="context-section">
+                    <div class="context-header">Trend Analysis</div>
+                    <div class="context-grid">
+                        <div class="context-item">
+                            <div class="context-label">August</div>
+                            <div class="context-value">9 total issues</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">September</div>
+                            <div class="context-value">12 total issues</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">October</div>
+                            <div class="context-value">11 total issues</div>
+                        </div>
+                        <div class="context-item">
+                            <div class="context-label">November</div>
+                            <div class="context-value">15 total issues</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">📈 Worsening: Equipment Failures</div>
+                        <div class="lesson-frequency" style="background: rgba(255,68,68,0.2); color: #ff6b6b;">+67%</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        Equipment issues increased from 3 in August to 5 in November. NVG battery failures are the primary driver, affecting Charlie Team disproportionately.
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">📈 Worsening: Coordination Issues</div>
+                        <div class="lesson-frequency" style="background: rgba(255,68,68,0.2); color: #ff6b6b;">+50%</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        Multi-element coordination problems up from 2 to 3 incidents. Primarily affecting Delta Team in urban environments.
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">📉 Improving: Intel Lag</div>
+                        <div class="lesson-frequency" style="background: rgba(68,255,68,0.1); color: #51cf66;">Stable</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        TOC update delays have remained consistent. No significant improvement or degradation.
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateUrbanMultiElementResponse() {
+            return `
+                <div class="message-text">
+                    Found <strong>3 relevant lessons</strong> for multi-element operations in urban environments:
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Coordination timing issues</div>
+                        <div class="lesson-frequency">3×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Delta Team</span>
+                        <span class="meta-tag">Urban</span>
+                        <span class="meta-tag">Multi-Element</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        Operations with 3+ elements consistently showed synchronization errors when only 2 rehearsal cycles were conducted. Minimum 4 rehearsal cycles recommended for complex urban operations.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">Joint Movement 08</a>
+                        <a class="source-link">Complex Op 15</a>
+                        <a class="source-link">Rehearsal Ex 05</a>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Intel update lag in urban setting</div>
+                        <div class="lesson-frequency">2×</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        Urban operations experienced 15-20 minute delays for intelligence updates from TOC to ground elements. Recommend dedicated intel liaison with direct comms to element leaders.
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateCoordinationResponse() {
+            return `
+                <div class="message-text">
+                    Found <strong>6 coordination-related incidents</strong>. Most common issue is multi-element synchronization.
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Multi-element synchronization failures</div>
+                        <div class="lesson-frequency">4×</div>
+                    </div>
+                    <div class="lesson-card-meta">
+                        <span class="meta-tag">Delta Team: 2×</span>
+                        <span class="meta-tag">Urban: 3×</span>
+                        <span class="meta-tag">3+ Elements</span>
+                    </div>
+                    <div class="lesson-card-description">
+                        Complex operations involving multiple elements showed consistent coordination errors when rehearsal time was insufficient. Current SOP allocates 2 rehearsal cycles; data suggests minimum 4 cycles needed for 3+ element operations.
+                    </div>
+                    <div class="lesson-card-sources">
+                        <span style="color: #8b92a8; font-size: 0.8125rem;">Sources:</span>
+                        <a class="source-link">Group Debrief Trauma</a>
+                        <a class="source-link">Alpha Team Ex-12</a>
+                        <a class="source-link">Joint Movement 08</a>
+                        <a class="source-link">Complex Op 15</a>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-card-header">
+                        <div class="lesson-card-title">Timing issues in rehearsals</div>
+                        <div class="lesson-frequency">2×</div>
+                    </div>
+                    <div class="lesson-card-description">
+                        Teams reported insufficient time for rehearsals led to timing mismatches during execution. Recommendation: build additional buffer time into planning phase.
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateGenericResponse(query) {
+            return `
+                <div class="message-text">
+                    I searched through all lessons learned data for: "<em>${query}</em>"
+                </div>
+                <div class="message-text" style="margin-top: 1rem;">
+                    Could you be more specific? Try including:
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Team names (Alpha, Bravo, Charlie, Delta)</li>
+                        <li>Terrain types (wooded, desert, urban, mountainous)</li>
+                        <li>Issue categories (communications, equipment, coordination, intel)</li>
+                        <li>Mission types (recon, direct action, multi-element)</li>
+                        <li>Or describe your current situation</li>
+                    </ul>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
