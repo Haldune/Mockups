@@ -874,8 +874,8 @@
             color: #8b92a8;
         }
 
-        /* Leaf Connector */
-        .leaf-connector {
+        /* Detail Connector (new intermediate layer) */
+        .detail-connector {
             width: 40px;
             height: 2px;
             background: #2a3447;
@@ -884,7 +884,75 @@
             transition: background 0.3s ease;
         }
 
-        .sub-node:hover .leaf-connector {
+        .sub-node:hover .detail-connector {
+            background: #00bfff;
+        }
+
+        /* Detail Nodes Container (new intermediate layer) */
+        .detail-nodes {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .sub-node:hover .detail-nodes {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .detail-node {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            position: relative;
+        }
+
+        .detail-node .node-content {
+            min-width: 140px;
+            background: #0f1320;
+            border: 1px solid #1e2535;
+            border-radius: 5px;
+            padding: 0.75rem 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-node:hover .node-content {
+            background: #1e2535;
+            border-color: #00bfff;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 191, 255, 0.15);
+        }
+
+        .detail-node .node-title {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #e1e4ea;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-node .node-count {
+            font-size: 0.75rem;
+            color: #8b92a8;
+        }
+
+        /* Leaf Connector */
+        .leaf-connector {
+            width: 35px;
+            height: 2px;
+            background: #2a3447;
+            margin-top: 22px;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .detail-node:hover .leaf-connector {
             background: #00bfff;
         }
 
@@ -892,13 +960,13 @@
         .leaf-nodes {
             display: none;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.625rem;
             opacity: 0;
             transform: translateX(-10px);
             transition: all 0.3s ease;
         }
 
-        .sub-node:hover .leaf-nodes {
+        .detail-node:hover .leaf-nodes {
             display: flex;
             opacity: 1;
             transform: translateX(0);
@@ -973,6 +1041,27 @@
             background: #00bfff;
         }
 
+        /* Animation for detail nodes appearing */
+        @keyframes slideInDetail {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .sub-node:hover .detail-node {
+            animation: slideInDetail 0.3s ease forwards;
+        }
+
+        .sub-node:hover .detail-node:nth-child(1) { animation-delay: 0s; }
+        .sub-node:hover .detail-node:nth-child(2) { animation-delay: 0.05s; }
+        .sub-node:hover .detail-node:nth-child(3) { animation-delay: 0.1s; }
+        .sub-node:hover .detail-node:nth-child(4) { animation-delay: 0.15s; }
+
         /* Animation for leaf nodes appearing */
         @keyframes slideInLeaf {
             from {
@@ -985,17 +1074,17 @@
             }
         }
 
-        .sub-node:hover .leaf-node {
+        .detail-node:hover .leaf-node {
             animation: slideInLeaf 0.3s ease forwards;
         }
 
-        .sub-node:hover .leaf-node:nth-child(1) { animation-delay: 0s; }
-        .sub-node:hover .leaf-node:nth-child(2) { animation-delay: 0.05s; }
-        .sub-node:hover .leaf-node:nth-child(3) { animation-delay: 0.1s; }
-        .sub-node:hover .leaf-node:nth-child(4) { animation-delay: 0.15s; }
-        .sub-node:hover .leaf-node:nth-child(5) { animation-delay: 0.2s; }
-        .sub-node:hover .leaf-node:nth-child(6) { animation-delay: 0.25s; }
-        .sub-node:hover .leaf-node:nth-child(7) { animation-delay: 0.3s; }
+        .detail-node:hover .leaf-node:nth-child(1) { animation-delay: 0s; }
+        .detail-node:hover .leaf-node:nth-child(2) { animation-delay: 0.05s; }
+        .detail-node:hover .leaf-node:nth-child(3) { animation-delay: 0.1s; }
+        .detail-node:hover .leaf-node:nth-child(4) { animation-delay: 0.15s; }
+        .detail-node:hover .leaf-node:nth-child(5) { animation-delay: 0.2s; }
+        .detail-node:hover .leaf-node:nth-child(6) { animation-delay: 0.25s; }
+        .detail-node:hover .leaf-node:nth-child(7) { animation-delay: 0.3s; }
 
         /* Modal Styles */
         .modal-overlay {
@@ -1618,44 +1707,69 @@
                                     <div class="node-count">7 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
-                                        <div class="leaf-id">ReconDemoAug25</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Recon V3 Demo');">
-                                        <div class="leaf-id">Recon V3 Demo</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mountain Ex-14');">
-                                        <div class="leaf-id">Mountain Ex-14</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Mountain</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Patrol 08');">
-                                        <div class="leaf-id">Night Patrol 08</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Forest Recon 12');">
-                                        <div class="leaf-id">Forest Recon 12</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpine Ops 03');">
-                                        <div class="leaf-id">Alpine Ops 03</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Mountain</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Terrain Nav 19');">
-                                        <div class="leaf-id">Terrain Nav 19</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Frequency Interference subgroup -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Frequency Interference</div>
+                                            <div class="node-count">4 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                                <div class="leaf-id">ReconDemoAug25</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Recon V3 Demo');">
+                                                <div class="leaf-id">Recon V3 Demo</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Patrol 08');">
+                                                <div class="leaf-id">Night Patrol 08</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Forest Recon 12');">
+                                                <div class="leaf-id">Forest Recon 12</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Mountainous Terrain subgroup -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Mountainous Terrain</div>
+                                            <div class="node-count">3 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mountain Ex-14');">
+                                                <div class="leaf-id">Mountain Ex-14</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Mountain</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpine Ops 03');">
+                                                <div class="leaf-id">Alpine Ops 03</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Mountain</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Terrain Nav 19');">
+                                                <div class="leaf-id">Terrain Nav 19</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1665,24 +1779,49 @@
                                     <div class="node-count">3 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Multi-Team Ex 07');">
-                                        <div class="leaf-id">Multi-Team Ex 07</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Ops 14');">
-                                        <div class="leaf-id">Joint Ops 14</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Combined Ex 21');">
-                                        <div class="leaf-id">Combined Ex 21</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Multi-Team Operations -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Multi-Team Ops</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Multi-Team Ex 07');">
+                                                <div class="leaf-id">Multi-Team Ex 07</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Combined Ex 21');">
+                                                <div class="leaf-id">Combined Ex 21</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Inter-Unit Coordination -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Inter-Unit Protocol</div>
+                                            <div class="node-count">1 case</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Ops 14');">
+                                                <div class="leaf-id">Joint Ops 14</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1692,19 +1831,31 @@
                                     <div class="node-count">2 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 11');">
-                                        <div class="leaf-id">Extended Patrol 11</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Mountain</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Long Range 06');">
-                                        <div class="leaf-id">Long Range 06</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Extended Range Operations -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Extended Range</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 11');">
+                                                <div class="leaf-id">Extended Patrol 11</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Mountain</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Long Range 06');">
+                                                <div class="leaf-id">Long Range 06</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1728,39 +1879,64 @@
                                     <div class="node-count">6 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Ops Training');">
-                                        <div class="leaf-id">Night Ops Training</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 19');">
-                                        <div class="leaf-id">Extended Patrol 19</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Recon 08');">
-                                        <div class="leaf-id">Night Recon 08</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Darkness Ops 15');">
-                                        <div class="leaf-id">Darkness Ops 15</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Stealth Ex 22');">
-                                        <div class="leaf-id">Stealth Ex 22</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Movement 04');">
-                                        <div class="leaf-id">Night Movement 04</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Desert Operations -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Desert Conditions</div>
+                                            <div class="node-count">4 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Ops Training');">
+                                                <div class="leaf-id">Night Ops Training</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Extended Patrol 19');">
+                                                <div class="leaf-id">Extended Patrol 19</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Stealth Ex 22');">
+                                                <div class="leaf-id">Stealth Ex 22</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Movement 04');">
+                                                <div class="leaf-id">Night Movement 04</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Other Terrain -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Mixed Terrain</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Night Recon 08');">
+                                                <div class="leaf-id">Night Recon 08</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Darkness Ops 15');">
+                                                <div class="leaf-id">Darkness Ops 15</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1770,19 +1946,31 @@
                                     <div class="node-count">2 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Map Reading 09');">
-                                        <div class="leaf-id">Map Reading 09</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Mountain</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Navigation Ex 16');">
-                                        <div class="leaf-id">Navigation Ex 16</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Difficult Terrain -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Challenging Terrain</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Map Reading 09');">
+                                                <div class="leaf-id">Map Reading 09</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Mountain</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Navigation Ex 16');">
+                                                <div class="leaf-id">Navigation Ex 16</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1792,14 +1980,26 @@
                                     <div class="node-count">1 case</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Gear Test 11');">
-                                        <div class="leaf-id">Gear Test 11</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Miscellaneous -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">General Gear</div>
+                                            <div class="node-count">1 case</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Gear Test 11');">
+                                                <div class="leaf-id">Gear Test 11</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1823,34 +2023,59 @@
                                     <div class="node-count">5 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('SR Mission Brief');">
-                                        <div class="leaf-id">SR Mission Brief</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Urban Patrol 22');">
-                                        <div class="leaf-id">Urban Patrol 22</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Intel Relay 18');">
-                                        <div class="leaf-id">Intel Relay 18</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Target Update 09');">
-                                        <div class="leaf-id">Target Update 09</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mission Coord 03');">
-                                        <div class="leaf-id">Mission Coord 03</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Urban Environment -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Urban Operations</div>
+                                            <div class="node-count">3 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('SR Mission Brief');">
+                                                <div class="leaf-id">SR Mission Brief</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Urban Patrol 22');">
+                                                <div class="leaf-id">Urban Patrol 22</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Target Update 09');">
+                                                <div class="leaf-id">Target Update 09</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Desert Environment -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Desert Operations</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Intel Relay 18');">
+                                                <div class="leaf-id">Intel Relay 18</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Mission Coord 03');">
+                                                <div class="leaf-id">Mission Coord 03</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1860,19 +2085,31 @@
                                     <div class="node-count">2 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Live Update 12');">
-                                        <div class="leaf-id">Live Update 12</div>
-                                        <div class="leaf-team">Bravo</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Dynamic Ops 07');">
-                                        <div class="leaf-id">Dynamic Ops 07</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Dynamic Situations -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Fast-Changing Ops</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Live Update 12');">
+                                                <div class="leaf-id">Live Update 12</div>
+                                                <div class="leaf-team">Bravo</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Dynamic Ops 07');">
+                                                <div class="leaf-id">Dynamic Ops 07</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1896,29 +2133,54 @@
                                     <div class="node-count">4 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Group Debrief Trauma');">
-                                        <div class="leaf-id">Group Debrief Trauma</div>
-                                        <div class="leaf-team">Mixed</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpha Team Ex-12');">
-                                        <div class="leaf-id">Alpha Team Ex-12</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Movement 08');">
-                                        <div class="leaf-id">Joint Movement 08</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Complex Op 15');">
-                                        <div class="leaf-id">Complex Op 15</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Urban Multi-Element -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Urban Coordination</div>
+                                            <div class="node-count">3 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Group Debrief Trauma');">
+                                                <div class="leaf-id">Group Debrief Trauma</div>
+                                                <div class="leaf-team">Mixed</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Joint Movement 08');">
+                                                <div class="leaf-id">Joint Movement 08</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Complex Op 15');">
+                                                <div class="leaf-id">Complex Op 15</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Desert Multi-Element -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Desert Coordination</div>
+                                            <div class="node-count">1 case</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Alpha Team Ex-12');">
+                                                <div class="leaf-id">Alpha Team Ex-12</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1928,19 +2190,31 @@
                                     <div class="node-count">2 cases</div>
                                 </div>
                                 
-                                <div class="leaf-connector"></div>
+                                <div class="detail-connector"></div>
                                 
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Sync Ops 11');">
-                                        <div class="leaf-id">Sync Ops 11</div>
-                                        <div class="leaf-team">Charlie</div>
-                                        <div class="leaf-location">Desert</div>
-                                    </a>
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Rehearsal Ex 05');">
-                                        <div class="leaf-id">Rehearsal Ex 05</div>
-                                        <div class="leaf-team">Delta</div>
-                                        <div class="leaf-location">Urban</div>
-                                    </a>
+                                <div class="detail-nodes">
+                                    <!-- Synchronization Problems -->
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Sync Problems</div>
+                                            <div class="node-count">2 cases</div>
+                                        </div>
+                                        
+                                        <div class="leaf-connector"></div>
+                                        
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Sync Ops 11');">
+                                                <div class="leaf-id">Sync Ops 11</div>
+                                                <div class="leaf-team">Charlie</div>
+                                                <div class="leaf-location">Desert</div>
+                                            </a>
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('Rehearsal Ex 05');">
+                                                <div class="leaf-id">Rehearsal Ex 05</div>
+                                                <div class="leaf-team">Delta</div>
+                                                <div class="leaf-location">Urban</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1963,13 +2237,22 @@
                                     <div class="node-title">Communications</div>
                                     <div class="node-count">5 cases</div>
                                 </div>
-                                <div class="leaf-connector"></div>
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
-                                        <div class="leaf-id">ReconDemoAug25</div>
-                                        <div class="leaf-team">Radio Failure</div>
-                                        <div class="leaf-location">Wooded</div>
-                                    </a>
+                                <div class="detail-connector"></div>
+                                <div class="detail-nodes">
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Radio Failure</div>
+                                            <div class="node-count">3 cases</div>
+                                        </div>
+                                        <div class="leaf-connector"></div>
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                                <div class="leaf-id">ReconDemoAug25</div>
+                                                <div class="leaf-team">Frequency Issue</div>
+                                                <div class="leaf-location">Wooded</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1992,13 +2275,22 @@
                                     <div class="node-title">Communications</div>
                                     <div class="node-count">6 cases</div>
                                 </div>
-                                <div class="leaf-connector"></div>
-                                <div class="leaf-nodes">
-                                    <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
-                                        <div class="leaf-id">ReconDemoAug25</div>
-                                        <div class="leaf-team">Alpha</div>
-                                        <div class="leaf-location">Radio Failure</div>
-                                    </a>
+                                <div class="detail-connector"></div>
+                                <div class="detail-nodes">
+                                    <div class="detail-node">
+                                        <div class="node-content">
+                                            <div class="node-title">Radio Failure</div>
+                                            <div class="node-count">4 cases</div>
+                                        </div>
+                                        <div class="leaf-connector"></div>
+                                        <div class="leaf-nodes">
+                                            <a href="#" class="leaf-node" onclick="event.preventDefault(); openModal('ReconDemoAug25');">
+                                                <div class="leaf-id">ReconDemoAug25</div>
+                                                <div class="leaf-team">Alpha</div>
+                                                <div class="leaf-location">Frequency Issue</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
