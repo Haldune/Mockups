@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-AAR Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Top Header Bar */
+        .top-bar {
+            background: #1a1f2e;
+            padding: 8px 24px;
+            font-size: 11px;
+            color: #8b92a7;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Header */
+        .header {
+            background: #0f1419;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1a1f2e;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .product-title {
+            color: #4a9eff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-subtitle {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .tab {
+            background: #1a2332;
+            padding: 8px 20px;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 2px solid #4a9eff;
+        }
+
+        .tab-close {
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-tab {
+            width: 32px;
+            height: 32px;
+            background: #1a2332;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 20px;
+        }
+
+        .settings-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a9eff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Layout Container */
+        .container {
+            display: flex;
+            height: calc(100vh - 120px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #0f1419;
+            border-right: 1px solid #1a1f2e;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 0 24px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .back-arrow {
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+        }
+
+        .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: #8b92a7;
+            transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #1a1f2e;
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background: #1a2f4a;
+            color: #fff;
+            border-left: 3px solid #4a9eff;
+        }
+
+        .menu-icon {
+            width: 20px;
+            font-size: 18px;
+        }
+
+        .menu-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-subtitle {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .menu-item.has-submenu {
+            justify-content: space-between;
+        }
+
+        .chevron {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .user-section {
+            padding: 16px 24px;
+            border-top: 1px solid #1a1f2e;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #4a9eff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .page-description {
+            color: #8b92a7;
+            font-size: 14px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #141923;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #1a1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label {
+            color: #8b92a7;
+            font-size: 13px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #1a2332;
+            border-radius: 50%;
+        }
+
+        .launch-card {
+            background: #141923;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #1a1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .launch-label {
+            color: #8b92a7;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .launch-text {
+            font-size: 36px;
+            font-weight: 600;
+        }
+
+        .launch-icon {
+            width: 48px;
+            height: 48px;
+            background: #1a2332;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a9eff;
+        }
+
+        /* Debrief Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .create-btn {
+            background: #0ea5e9;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-btn:hover {
+            background: #0284c7;
+        }
+
+        /* Table */
+        .table-container {
+            background: #141923;
+            border-radius: 8px;
+            border: 1px solid #1a1f2e;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #1a1f2e;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b92a7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-top: 1px solid #1a1f2e;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #1a1f2e;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-incomplete {
+            background: #854d0e;
+            color: #fbbf24;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #4c1d95;
+            color: #c084fc;
+        }
+
+        .mode-individual {
+            background: #1e3a5f;
+            color: #60a5fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: #059669;
+            color: #fff;
+        }
+
+        .btn-launch {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0f1419;
+            padding: 16px 24px;
+            border-top: 1px solid #1a1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #141923;
+            border-radius: 12px;
+            border: 1px solid #1a1f2e;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #1a1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: transparent;
+            border: none;
+            color: #8b92a7;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #1a1f2e;
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 32px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid #1a1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Form Wizard */
+        .wizard-steps {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #1a1f2e;
+        }
+
+        .wizard-step {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #1a1f2e;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .wizard-step.active .step-number {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .wizard-step.completed .step-number {
+            background: #059669;
+            color: #fff;
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #8b92a7;
+        }
+
+        .wizard-step.active .step-title {
+            color: #fff;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-description {
+            color: #8b92a7;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .form-hint {
+            display: block;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: #0f1419;
+            border: 1px solid #1a1f2e;
+            border-radius: 6px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .selection-card {
+            background: #0f1419;
+            border: 2px solid #1a1f2e;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .selection-card:hover {
+            border-color: #2d3748;
+        }
+
+        .selection-card.selected {
+            border-color: #0ea5e9;
+            background: #1a2f4a;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: #8b92a7;
+            line-height: 1.5;
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: #1a1f2e;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #8b92a7;
+            margin-top: 8px;
+        }
+
+        /* Checklist */
+        .task-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .task-item {
+            background: #0f1419;
+            border: 1px solid #1a1f2e;
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            border-color: #2d3748;
+        }
+
+        .task-item.selected {
+            border-color: #0ea5e9;
+            background: #1a2332;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1a1f2e;
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-item.selected .task-checkbox {
+            background: #0ea5e9;
+            border-color: #0ea5e9;
+        }
+
+        .task-item.selected .task-checkbox::after {
+            content: '✓';
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-code {
+            font-size: 12px;
+            color: #6b7280;
+            font-family: monospace;
+            margin-bottom: 4px;
+        }
+
+        .task-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .task-description {
+            font-size: 13px;
+            color: #8b92a7;
+            line-height: 1.4;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .task-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: #1a1f2e;
+            color: #8b92a7;
+        }
+
+        /* Navigation Buttons */
+        .btn-secondary {
+            background: #1a1f2e;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #2d3748;
+        }
+
+        .btn-primary {
+            background: #0ea5e9;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #0284c7;
+        }
+
+        .btn-primary:disabled {
+            background: #1a1f2e;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #1a2f4a;
+            border: 1px solid #2d4a6e;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-box-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .info-box-text {
+            font-size: 13px;
+            color: #8b92a7;
+            line-height: 1.5;
+        }
+
+        .selected-count {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+
+        .search-input {
+            width: 100%;
+            padding-left: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Classification Bar -->
+    <div class="top-bar">
+        UNCLASSIFIED // NOTIONAL DATA | HAL. CORP. CLASSIFICATION CONFIDENTIAL TC1.1
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo">HALDUNE</div>
+            <div class="product-info">
+                <div class="product-title">E-AAR</div>
+                <div class="product-subtitle">Electronic After-Action Review</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="tab">
+                <span>Admin</span>
+                <span class="tab-close">×</span>
+            </div>
+            <div class="add-tab">+</div>
+            <div class="settings-icon">⚙</div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span>Admin Portal</span>
+                <span class="back-arrow">‹</span>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <div class="menu-item active">
+                    <span class="menu-icon">▣</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Dashboard</div>
+                        <div class="menu-subtitle">Overview and analytics</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">▤</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Global Docs</div>
+                        <div class="menu-subtitle">Document management</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">▧</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Debriefs</div>
+                        <div class="menu-subtitle">Manage debrief sessions</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">▥</span>
+                    <div class="menu-content">
+                        <div class="menu-title">PDF Templates</div>
+                        <div class="menu-subtitle">Customize PDF templates</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">▦</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Divisions</div>
+                        <div class="menu-subtitle">Organization structure</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">▨</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Personnel</div>
+                        <div class="menu-subtitle">Manage team members</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">⚙</span>
+                    <div class="menu-content">
+                        <div class="menu-title">Config</div>
+                        <div class="menu-subtitle">System configuration</div>
+                    </div>
+                </div>
+                
+                <div class="menu-item has-submenu">
+                    <span class="menu-icon">&lt;/&gt;</span>
+                    <div class="menu-content">
+                        <div class="menu-title">DevTools</div>
+                        <div class="menu-subtitle">Developer tools & testing</div>
+                    </div>
+                    <span class="chevron">›</span>
+                </div>
+                
+                <div class="menu-item">
+                    <span class="menu-icon">⊙</span>
+                    <span class="menu-title">Behavior Tests</span>
+                </div>
+            </nav>
+
+            <div class="user-section">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <div class="user-name">Administrator</div>
+                    <div class="user-role">Admin</div>
+                </div>
+                <span style="color: #6b7280; cursor: pointer;">↪</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Admin Dashboard: Organization JayTest1</h1>
+                <p class="page-description">Manage employees, create debriefs, and configure organizational hierarchies.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Total Employees</div>
+                        <div class="stat-value">1</div>
+                    </div>
+                    <div class="stat-icon"></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Total Divisions</div>
+                        <div class="stat-value">1</div>
+                    </div>
+                    <div class="stat-icon"></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Total Debriefs</div>
+                        <div class="stat-value">12</div>
+                    </div>
+                    <div class="stat-icon"></div>
+                </div>
+
+                <div class="launch-card">
+                    <div>
+                        <div class="launch-label">Brief</div>
+                        <div class="launch-text">Launch</div>
+                    </div>
+                    <div class="launch-icon">→</div>
+                </div>
+            </div>
+
+            <!-- Debrief Management Section -->
+            <div class="section-header">
+                <h2 class="section-title">Debrief Management</h2>
+                <button class="create-btn">+ Create Debrief</button>
+            </div>
+
+            <!-- Debrief Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>OBJECTIVE</th>
+                            <th>ASSIGNED TO</th>
+                            <th>STATUS</th>
+                            <th>MODE</th>
+                            <th>PDF TEMPLATE</th>
+                            <th>LAST UPDATED</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>100</td>
+                            <td>Test</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge">group</span></td>
+                            <td>...</td>
+                            <td>2025-12-04T16:07:31.122765</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>Test121</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge">group</span></td>
+                            <td>...</td>
+                            <td>2025-12-04T16:35:25.372530</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>102</td>
+                            <td>test</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge">group</span></td>
+                            <td>...</td>
+                            <td>2025-12-04T16:47:43.415785</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>103</td>
+                            <td>Test</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge">group</span></td>
+                            <td>...</td>
+                            <td>2025-12-04T16:48:18.449287</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>104</td>
+                            <td>Individual test</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge">group</span></td>
+                            <td>...</td>
+                            <td>2025-12-05T21:20:49.343003</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>105</td>
+                            <td>Individual</td>
+                            <td>Jay Test</td>
+                            <td><span class="status-badge status-incomplete">Incomplete</span></td>
+                            <td><span class="mode-badge mode-individual">individual</span></td>
+                            <td>...</td>
+                            <td>2025-12-05T22:32:30.787843</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit">Edit</button>
+                                    <button class="btn btn-launch">Launch</button>
+                                    <button class="btn btn-delete">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Debrief Modal -->
+    <div class="modal-overlay" id="createDebriefModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Debrief</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Wizard Steps -->
+                <div class="wizard-steps">
+                    <div class="wizard-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-info">
+                            <div class="step-label">Step 1</div>
+                            <div class="step-title">Unit Selection</div>
+                        </div>
+                    </div>
+                    <div class="wizard-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-info">
+                            <div class="step-label">Step 2</div>
+                            <div class="step-title">Mission Details</div>
+                        </div>
+                    </div>
+                    <div class="wizard-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-info">
+                            <div class="step-label">Step 3</div>
+                            <div class="step-title">Task Selection</div>
+                        </div>
+                    </div>
+                    <div class="wizard-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-info">
+                            <div class="step-label">Step 4</div>
+                            <div class="step-title">Review</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Unit Selection -->
+                <div class="form-section active" data-section="1">
+                    <div class="section-header">
+                        <h3 class="section-title">Select Unit Type</h3>
+                        <p class="section-description">
+                            Choose the unit type that conducted this operation. Each unit type has its own Mission Essential Task List (METL) 
+                            and doctrinal performance standards aligned with Army Universal Task List (AUTL) and Joint Task frameworks.
+                        </p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">▸ Doctrinal Framework</div>
+                        <div class="info-box-text">
+                            The system uses hierarchical task lists: Universal Joint Task List (UJTL) → Army Universal Task List (AUTL) → 
+                            Mission Essential Task Lists (METLs). Selecting your unit type ensures the debrief evaluates performance against 
+                            the correct doctrinal standards.
+                        </div>
+                    </div>
+
+                    <div class="card-grid">
+                        <div class="selection-card" onclick="selectUnitType('infantry-brigade')">
+                            <div class="card-title">Infantry Brigade Combat Team</div>
+                            <div class="card-description">
+                                Maneuver brigade focused on close combat operations, offensive and defensive operations in complex terrain.
+                            </div>
+                            <div class="card-badge">METL: 15 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('armored-brigade')">
+                            <div class="card-title">Armored Brigade Combat Team</div>
+                            <div class="card-description">
+                                Heavy maneuver brigade with combined arms capabilities for decisive action across full spectrum operations.
+                            </div>
+                            <div class="card-badge">METL: 16 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('stryker-brigade')">
+                            <div class="card-title">Stryker Brigade Combat Team</div>
+                            <div class="card-description">
+                                Medium-weight maneuver brigade optimized for rapid deployment and operations in complex environments.
+                            </div>
+                            <div class="card-badge">METL: 14 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('engineer-battalion')">
+                            <div class="card-title">Combat Engineer Battalion</div>
+                            <div class="card-description">
+                                Mobility, countermobility, and survivability operations in support of maneuver forces.
+                            </div>
+                            <div class="card-badge">METL: 12 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('field-artillery')">
+                            <div class="card-title">Field Artillery Battalion</div>
+                            <div class="card-description">
+                                Provides fire support through cannon or rocket systems in support of maneuver operations.
+                            </div>
+                            <div class="card-badge">METL: 11 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('sustainment-brigade')">
+                            <div class="card-title">Sustainment Brigade</div>
+                            <div class="card-description">
+                                Provides logistics support including supply, maintenance, transportation, and distribution operations.
+                            </div>
+                            <div class="card-badge">METL: 13 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('aviation-battalion')">
+                            <div class="card-title">Aviation Battalion</div>
+                            <div class="card-description">
+                                Provides aviation support for reconnaissance, attack, or utility missions in support of ground operations.
+                            </div>
+                            <div class="card-badge">METL: 10 Core Tasks</div>
+                        </div>
+
+                        <div class="selection-card" onclick="selectUnitType('military-intelligence')">
+                            <div class="card-title">Military Intelligence Battalion</div>
+                            <div class="card-description">
+                                Provides intelligence support including collection, analysis, and dissemination for operational commanders.
+                            </div>
+                            <div class="card-badge">METL: 9 Core Tasks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Mission Details -->
+                <div class="form-section" data-section="2">
+                    <div class="section-header">
+                        <h3 class="section-title">Mission Details</h3>
+                        <p class="section-description">
+                            Provide context about the training event or operation. This information will be used to properly frame 
+                            the AAR within doctrinal mission phases and warfighting functions.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mission/Training Event Title *</label>
+                        <input type="text" class="form-input" id="missionTitle" placeholder="e.g., Company Live Fire Exercise">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mission Type *</label>
+                        <select class="form-select" id="missionType">
+                            <option value="">Select mission type...</option>
+                            <option value="offensive">Offensive Operations</option>
+                            <option value="defensive">Defensive Operations</option>
+                            <option value="stability">Stability Operations</option>
+                            <option value="dsca">Defense Support to Civil Authorities</option>
+                            <option value="training">Training Exercise</option>
+                            <option value="field-training">Field Training Exercise (FTX)</option>
+                            <option value="command-post">Command Post Exercise (CPX)</option>
+                            <option value="live-fire">Live Fire Exercise</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Date of Execution *</label>
+                        <input type="date" class="form-input" id="missionDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Primary Warfighting Function(s)</label>
+                        <span class="form-hint">Select the primary warfighting functions involved in this operation</span>
+                        <select class="form-select" id="warfightingFunction" multiple size="6">
+                            <option value="movement-maneuver">Movement and Maneuver</option>
+                            <option value="intelligence">Intelligence</option>
+                            <option value="fires">Fires</option>
+                            <option value="sustainment">Sustainment</option>
+                            <option value="protection">Protection</option>
+                            <option value="mission-command">Mission Command</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mission Context / Commander's Intent</label>
+                        <span class="form-hint">Provide additional context about the training objectives or operational environment</span>
+                        <textarea class="form-textarea" id="missionContext" placeholder="Describe the training objectives, conditions, and any special considerations..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Debrief Mode *</label>
+                        <select class="form-select" id="debriefMode">
+                            <option value="group">Group Debrief (Collective AAR)</option>
+                            <option value="individual">Individual Debrief (Leader/Soldier AAR)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 3: Task Selection -->
+                <div class="form-section" data-section="3">
+                    <div class="section-header">
+                        <h3 class="section-title">Select Mission Essential Tasks</h3>
+                        <p class="section-description">
+                            Select the specific METL tasks that were trained or executed during this operation. The AAR will evaluate 
+                            performance against the doctrinal standards for each selected task from Training & Evaluation Outlines (T&EOs).
+                        </p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">▸ Task-Based Evaluation</div>
+                        <div class="info-box-text">
+                            Each task has specific conditions and standards defined in doctrine. The AI will guide the debrief to assess 
+                            performance against these standards, identify strengths and weaknesses, and provide actionable recommendations.
+                        </div>
+                    </div>
+
+                    <div class="search-box">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" class="form-input search-input" id="taskSearch" placeholder="Search tasks by code or description...">
+                    </div>
+
+                    <div class="task-checklist" id="taskList">
+                        <!-- Tasks will be populated dynamically based on unit type -->
+                    </div>
+
+                    <div class="selected-count">
+                        <span id="taskCount">0 tasks selected</span>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review -->
+                <div class="form-section" data-section="4">
+                    <div class="section-header">
+                        <h3 class="section-title">Review & Create Debrief</h3>
+                        <p class="section-description">
+                            Review your debrief configuration before creation. The system will structure the conversation around doctrinal 
+                            evaluation frameworks rather than predefined questions.
+                        </p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">▸ Doctrinal Structure Confirmed</div>
+                        <div class="info-box-text">
+                            This debrief will follow doctrinal AAR principles: focusing on training objectives, evaluating against established 
+                            standards, identifying what happened and why, and providing actionable recommendations for improvement.
+                        </div>
+                    </div>
+
+                    <div style="background: #0f1419; border: 1px solid #1a1f2e; border-radius: 8px; padding: 24px; margin-top: 24px;">
+                        <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Debrief Summary</h4>
+                        
+                        <div style="display: grid; gap: 16px;">
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Unit Type</div>
+                                <div id="reviewUnitType" style="font-size: 14px;">-</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Mission Title</div>
+                                <div id="reviewMissionTitle" style="font-size: 14px;">-</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Mission Type</div>
+                                <div id="reviewMissionType" style="font-size: 14px;">-</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Date of Execution</div>
+                                <div id="reviewDate" style="font-size: 14px;">-</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Selected Tasks</div>
+                                <div id="reviewTasks" style="font-size: 14px;">-</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Debrief Mode</div>
+                                <div id="reviewMode" style="font-size: 14px;">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">Previous</button>
+                <div style="flex: 1;"></div>
+                <button class="btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>This is a restricted system. All activities are monitored. By accessing this information system you are consenting to this monitoring. Haldune Corp. © 2025.</div>
+        <div class="footer-links">
+            <a href="#">Haldune.com</a>
+            <a href="#">Research</a>
+            <a href="#">Demo</a>
+            <a href="#">T&C</a>
+            <a href="#">Privacy</a>
+        </div>
+    </footer>
+
+    <script>
+        // State management
+        let currentStep = 1;
+        let debriefData = {
+            unitType: '',
+            unitTypeName: '',
+            missionTitle: '',
+            missionType: '',
+            missionDate: '',
+            warfightingFunctions: [],
+            missionContext: '',
+            debriefMode: 'group',
+            selectedTasks: []
+        };
+
+        // Task database (sample data - in production this would be loaded from backend)
+        const taskDatabase = {
+            'infantry-brigade': [
+                { code: 'AUTL-07-2-0001', name: 'Conduct an Attack', description: 'Conduct offensive operations to defeat, destroy, or neutralize enemy forces', warfighting: 'Movement and Maneuver', standard: 'Unit executes attack IAW OPORD achieving specified end state within prescribed timeline' },
+                { code: 'AUTL-07-2-0002', name: 'Conduct a Defense', description: 'Conduct defensive operations to defeat enemy attack', warfighting: 'Movement and Maneuver', standard: 'Unit maintains defensive positions and repels enemy attacks per doctrinal standards' },
+                { code: 'AUTL-07-2-0012', name: 'Conduct Movement to Contact', description: 'Gain or regain contact with the enemy', warfighting: 'Movement and Maneuver', standard: 'Unit maintains security and establishes contact under favorable conditions' },
+                { code: 'AUTL-07-5-0002', name: 'Conduct Tactical Movement', description: 'Move forces from one location to another while maintaining security', warfighting: 'Movement and Maneuver', standard: 'Unit completes movement per timeline without compromise' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate forces to accomplish the mission', warfighting: 'Mission Command', standard: 'Commander maintains situational awareness and issues timely guidance' },
+                { code: 'AUTL-07-6-0012', name: 'Maintain Communications', description: 'Establish and maintain C2 systems', warfighting: 'Mission Command', standard: 'Unit maintains continuous communications across all echelons' },
+                { code: 'AUTL-02-6-0003', name: 'Conduct Intelligence Preparation of the Battlefield', description: 'Analyze threat, terrain, and weather impacts', warfighting: 'Intelligence', standard: 'IPB products support commander decision making' },
+                { code: 'AUTL-06-5-0001', name: 'Provide Fire Support', description: 'Integrate lethal and nonlethal fires', warfighting: 'Fires', standard: 'Fires achieve desired effects without fratricide' },
+                { code: 'AUTL-06-5-0006', name: 'Process Targets', description: 'Detect, identify, and engage priority targets', warfighting: 'Fires', standard: 'High-payoff targets engaged within decision/attack timelines' },
+                { code: 'AUTL-07-8-0001', name: 'Conduct Sustainment Operations', description: 'Maintain combat power through logistics', warfighting: 'Sustainment', standard: 'Unit sustains operations per OPORD timeline' },
+                { code: 'AUTL-07-8-0005', name: 'Provide Medical Support', description: 'Provide medical treatment and evacuation', warfighting: 'Sustainment', standard: 'Casualties evacuated within doctrinal timelines' },
+                { code: 'AUTL-07-7-0001', name: 'Provide Force Protection', description: 'Protect forces from threats', warfighting: 'Protection', standard: 'Unit maintains operational readiness through effective protection' },
+                { code: 'AUTL-07-7-0005', name: 'Conduct Operational Security', description: 'Deny adversary information about friendly forces', warfighting: 'Protection', standard: 'OPSEC measures prevent intelligence collection' },
+                { code: 'AUTL-07-2-0025', name: 'Conduct Passage of Lines', description: 'Coordinate movement through another unit positions', warfighting: 'Movement and Maneuver', standard: 'Unit completes passage without interference to other unit operations' },
+                { code: 'AUTL-07-2-0031', name: 'Conduct Relief in Place', description: 'Replace one unit with another in tactical positions', warfighting: 'Movement and Maneuver', standard: 'Relief executed without loss of security or capability' }
+            ],
+            'armored-brigade': [
+                { code: 'AUTL-07-2-0001', name: 'Conduct an Attack', description: 'Conduct offensive operations to defeat, destroy, or neutralize enemy forces', warfighting: 'Movement and Maneuver', standard: 'Unit executes attack IAW OPORD achieving specified end state within prescribed timeline' },
+                { code: 'AUTL-07-2-0002', name: 'Conduct a Defense', description: 'Conduct defensive operations to defeat enemy attack', warfighting: 'Movement and Maneuver', standard: 'Unit maintains defensive positions and repels enemy attacks per doctrinal standards' },
+                { code: 'AUTL-07-2-0008', name: 'Conduct an Exploitation', description: 'Take advantage of success in offensive operations', warfighting: 'Movement and Maneuver', standard: 'Unit maintains momentum and exploits enemy vulnerabilities' },
+                { code: 'AUTL-07-2-0009', name: 'Conduct a Pursuit', description: 'Catch or cut off hostile force attempting to escape', warfighting: 'Movement and Maneuver', standard: 'Unit maintains pressure on withdrawing enemy forces' },
+                { code: 'AUTL-07-5-0001', name: 'Conduct Armored Operations', description: 'Employ armored forces in combined arms operations', warfighting: 'Movement and Maneuver', standard: 'Armor forces synchronized with other combat systems' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate forces to accomplish the mission', warfighting: 'Mission Command', standard: 'Commander maintains situational awareness and issues timely guidance' },
+                { code: 'AUTL-06-5-0001', name: 'Provide Fire Support', description: 'Integrate lethal and nonlethal fires', warfighting: 'Fires', standard: 'Fires achieve desired effects without fratricide' },
+                { code: 'AUTL-07-8-0001', name: 'Conduct Sustainment Operations', description: 'Maintain combat power through logistics', warfighting: 'Sustainment', standard: 'Unit sustains operations per OPORD timeline' },
+                { code: 'AUTL-07-8-0003', name: 'Conduct Maintenance Operations', description: 'Maintain equipment operational readiness', warfighting: 'Sustainment', standard: 'Equipment maintained at prescribed OR rates' },
+                { code: 'AUTL-07-7-0001', name: 'Provide Force Protection', description: 'Protect forces from threats', warfighting: 'Protection', standard: 'Unit maintains operational readiness through effective protection' },
+                { code: 'AUTL-02-6-0003', name: 'Conduct Intelligence Preparation of the Battlefield', description: 'Analyze threat, terrain, and weather impacts', warfighting: 'Intelligence', standard: 'IPB products support commander decision making' },
+                { code: 'AUTL-07-2-0015', name: 'Conduct Breach Operations', description: 'Create lanes through obstacles', warfighting: 'Movement and Maneuver', standard: 'Breach completed within timeline enabling maneuver' },
+                { code: 'AUTL-07-5-0008', name: 'Conduct Route Reconnaissance', description: 'Obtain information about specified route', warfighting: 'Movement and Maneuver', standard: 'Route information supports commander decision making' },
+                { code: 'AUTL-06-5-0012', name: 'Conduct Close Air Support', description: 'Integrate air-to-ground fires', warfighting: 'Fires', standard: 'CAS integrated without fratricide' },
+                { code: 'AUTL-07-2-0022', name: 'Conduct Counterattack', description: 'Attack to regain initiative during defensive operations', warfighting: 'Movement and Maneuver', standard: 'Counterattack restores defensive positions' },
+                { code: 'AUTL-07-7-0008', name: 'Conduct Chemical, Biological, Radiological, and Nuclear Operations', description: 'Operate in contaminated environment', warfighting: 'Protection', standard: 'Unit maintains combat effectiveness in CBRN environment' }
+            ],
+            'engineer-battalion': [
+                { code: 'AUTL-05-3-0001', name: 'Provide Mobility Support', description: 'Enable maneuver forces to move and position', warfighting: 'Movement and Maneuver', standard: 'Mobility operations enable maneuver per timeline' },
+                { code: 'AUTL-05-3-0002', name: 'Provide Countermobility Support', description: 'Deny enemy freedom of movement', warfighting: 'Protection', standard: 'Obstacles integrated into scheme of maneuver' },
+                { code: 'AUTL-05-3-0003', name: 'Provide Survivability Support', description: 'Protect personnel, equipment, and facilities', warfighting: 'Protection', standard: 'Survivability positions constructed to standard' },
+                { code: 'AUTL-05-3-0010', name: 'Conduct Breaching Operations', description: 'Create lanes through enemy obstacles', warfighting: 'Movement and Maneuver', standard: 'Breach creates required lanes within timeline' },
+                { code: 'AUTL-05-3-0015', name: 'Conduct Route Clearance', description: 'Clear routes of mines and IEDs', warfighting: 'Protection', standard: 'Route cleared enabling freedom of movement' },
+                { code: 'AUTL-05-3-0020', name: 'Construct Fighting Positions', description: 'Build protective positions for forces', warfighting: 'Protection', standard: 'Positions constructed per engineer standards' },
+                { code: 'AUTL-05-3-0025', name: 'Conduct Obstacle Emplacement', description: 'Emplace tactical obstacles', warfighting: 'Protection', standard: 'Obstacles emplaced per scheme of fires and obstacles' },
+                { code: 'AUTL-05-3-0030', name: 'Conduct Engineer Reconnaissance', description: 'Collect information on terrain and obstacles', warfighting: 'Intelligence', standard: 'Reconnaissance supports commander\'s decision making' },
+                { code: 'AUTL-05-3-0035', name: 'Conduct Mine Countermeasure Operations', description: 'Detect and neutralize mines', warfighting: 'Protection', standard: 'Mines detected and cleared per SOP' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate engineer operations', warfighting: 'Mission Command', standard: 'Commander maintains situational awareness of engineer operations' },
+                { code: 'AUTL-07-8-0001', name: 'Conduct Sustainment Operations', description: 'Maintain combat power through logistics', warfighting: 'Sustainment', standard: 'Unit sustains operations per OPORD timeline' },
+                { code: 'AUTL-05-3-0040', name: 'Conduct Explosive Ordnance Disposal', description: 'Render safe explosive hazards', warfighting: 'Protection', standard: 'EOD operations conducted per established procedures' }
+            ],
+            'sustainment-brigade': [
+                { code: 'AUTL-04-4-0001', name: 'Provide Logistics Support', description: 'Sustain forces through distribution and support operations', warfighting: 'Sustainment', standard: 'Logistics delivered per established timelines' },
+                { code: 'AUTL-04-4-0005', name: 'Conduct Distribution Operations', description: 'Move supplies from source to user', warfighting: 'Sustainment', standard: 'Distribution maintains operational tempo' },
+                { code: 'AUTL-04-4-0010', name: 'Provide Field Maintenance', description: 'Conduct maintenance operations in tactical environment', warfighting: 'Sustainment', standard: 'Equipment maintained at prescribed readiness levels' },
+                { code: 'AUTL-04-4-0015', name: 'Provide Medical Support', description: 'Provide medical treatment and evacuation', warfighting: 'Sustainment', standard: 'Medical care delivered per established standards' },
+                { code: 'AUTL-04-4-0020', name: 'Conduct Supply Operations', description: 'Receive, store, and issue supplies', warfighting: 'Sustainment', standard: 'Supply operations maintain required stock levels' },
+                { code: 'AUTL-04-4-0025', name: 'Provide Transportation Support', description: 'Move units, personnel, and materiel', warfighting: 'Sustainment', standard: 'Transportation supports operational timeline' },
+                { code: 'AUTL-04-4-0030', name: 'Conduct Personnel Services', description: 'Provide HR support to forces', warfighting: 'Sustainment', standard: 'Personnel services maintain force readiness' },
+                { code: 'AUTL-04-4-0035', name: 'Provide Financial Management', description: 'Execute financial operations', warfighting: 'Sustainment', standard: 'Financial operations support mission requirements' },
+                { code: 'AUTL-04-4-0040', name: 'Conduct Aerial Delivery', description: 'Deliver supplies via aerial means', warfighting: 'Sustainment', standard: 'Aerial delivery executed per planned timeline' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate sustainment operations', warfighting: 'Mission Command', standard: 'Commander maintains visibility of sustainment status' },
+                { code: 'AUTL-07-7-0001', name: 'Provide Force Protection', description: 'Protect sustainment operations', warfighting: 'Protection', standard: 'Sustainment operations secured from threats' },
+                { code: 'AUTL-04-4-0045', name: 'Conduct Mortuary Affairs', description: 'Handle remains and personal effects', warfighting: 'Sustainment', standard: 'Mortuary operations conducted per policy' },
+                { code: 'AUTL-04-4-0050', name: 'Provide Water Support', description: 'Produce and distribute potable water', warfighting: 'Sustainment', standard: 'Water production meets consumption rates' }
+            ],
+            'field-artillery': [
+                { code: 'AUTL-06-5-0001', name: 'Provide Fire Support', description: 'Integrate lethal and nonlethal fires', warfighting: 'Fires', standard: 'Fires achieve desired effects without fratricide' },
+                { code: 'AUTL-06-5-0005', name: 'Conduct Offensive Fire Support', description: 'Support offensive operations with fires', warfighting: 'Fires', standard: 'Fires synchronized with scheme of maneuver' },
+                { code: 'AUTL-06-5-0006', name: 'Process Targets', description: 'Detect, identify, and engage priority targets', warfighting: 'Fires', standard: 'High-payoff targets engaged within decision/attack timelines' },
+                { code: 'AUTL-06-5-0010', name: 'Execute Fire Missions', description: 'Deliver fires on designated targets', warfighting: 'Fires', standard: 'Fire missions executed per fire support plan' },
+                { code: 'AUTL-06-5-0015', name: 'Conduct Counterfire Operations', description: 'Detect and neutralize enemy indirect fire systems', warfighting: 'Fires', standard: 'Enemy fires suppressed or destroyed' },
+                { code: 'AUTL-06-5-0020', name: 'Provide Defensive Fire Support', description: 'Support defensive operations with fires', warfighting: 'Fires', standard: 'Final protective fires available on call' },
+                { code: 'AUTL-06-5-0025', name: 'Conduct Fire Planning', description: 'Plan and coordinate fire support operations', warfighting: 'Fires', standard: 'Fire support plan integrated with maneuver plan' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate fire support operations', warfighting: 'Mission Command', standard: 'Fire direction maintains responsiveness to maneuver commander' },
+                { code: 'AUTL-02-6-0015', name: 'Conduct Target Acquisition', description: 'Locate targets for engagement', warfighting: 'Intelligence', standard: 'Targets located with sufficient accuracy for engagement' },
+                { code: 'AUTL-07-8-0001', name: 'Conduct Sustainment Operations', description: 'Maintain combat power through logistics', warfighting: 'Sustainment', standard: 'Ammunition resupply maintains firing capability' },
+                { code: 'AUTL-07-5-0010', name: 'Conduct Displacement', description: 'Move firing units to new positions', warfighting: 'Movement and Maneuver', standard: 'Displacement executed without loss of fire support' }
+            ],
+            'stryker-brigade': [
+                { code: 'AUTL-07-2-0001', name: 'Conduct an Attack', description: 'Conduct offensive operations to defeat, destroy, or neutralize enemy forces', warfighting: 'Movement and Maneuver', standard: 'Unit executes attack IAW OPORD achieving specified end state within prescribed timeline' },
+                { code: 'AUTL-07-2-0002', name: 'Conduct a Defense', description: 'Conduct defensive operations to defeat enemy attack', warfighting: 'Movement and Maneuver', standard: 'Unit maintains defensive positions and repels enemy attacks per doctrinal standards' },
+                { code: 'AUTL-07-5-0002', name: 'Conduct Tactical Movement', description: 'Move forces from one location to another while maintaining security', warfighting: 'Movement and Maneuver', standard: 'Unit completes movement per timeline without compromise' },
+                { code: 'AUTL-07-5-0015', name: 'Conduct Mounted Operations', description: 'Employ Stryker vehicles in combined arms operations', warfighting: 'Movement and Maneuver', standard: 'Mounted operations synchronized with dismounted operations' },
+                { code: 'AUTL-07-2-0018', name: 'Conduct Reconnaissance', description: 'Gain information about enemy and terrain', warfighting: 'Intelligence', standard: 'Reconnaissance provides timely and accurate information' },
+                { code: 'AUTL-07-2-0020', name: 'Conduct Security Operations', description: 'Provide early warning and protection', warfighting: 'Protection', standard: 'Security operations prevent enemy surprise' },
+                { code: 'AUTL-07-6-0001', name: 'Exercise Mission Command', description: 'Direct and coordinate forces to accomplish the mission', warfighting: 'Mission Command', standard: 'Commander maintains situational awareness and issues timely guidance' },
+                { code: 'AUTL-02-6-0003', name: 'Conduct Intelligence Preparation of the Battlefield', description: 'Analyze threat, terrain, and weather impacts', warfighting: 'Intelligence', standard: 'IPB products support commander decision making' },
+                { code: 'AUTL-06-5-0001', name: 'Provide Fire Support', description: 'Integrate lethal and nonlethal fires', warfighting: 'Fires', standard: 'Fires achieve desired effects without fratricide' },
+                { code: 'AUTL-07-8-0001', name: 'Conduct Sustainment Operations', description: 'Maintain combat power through logistics', warfighting: 'Sustainment', standard: 'Unit sustains operations per OPORD timeline' },
+                { code: 'AUTL-07-7-0001', name: 'Provide Force Protection', description: 'Protect forces from threats', warfighting: 'Protection', standard: 'Unit maintains operational readiness through effective protection' },
+                { code: 'AUTL-07-2-0028', name: 'Conduct Urban Operations', description: 'Conduct operations in urban terrain', warfighting: 'Movement and Maneuver', standard: 'Unit clears urban areas per doctrinal methods' },
+                { code: 'AUTL-07-2-0035', name: 'Conduct Stability Operations', description: 'Establish civil security and control', warfighting: 'Movement and Maneuver', standard: 'Stability operations achieve desired end state' },
+                { code: 'AUTL-07-5-0020', name: 'Conduct Rapid Deployment', description: 'Deploy forces quickly to operational area', warfighting: 'Movement and Maneuver', standard: 'Unit deploys within prescribed timeline' }
+            ],
+            'aviation-battalion': [
+                { code: 'AUTL-01-3-0001', name: 'Conduct Aviation Reconnaissance', description: 'Obtain information through aerial observation', warfighting: 'Intelligence', standard: 'Reconnaissance provides timely and accurate information' },
+                { code: 'AUTL-01-3-0005', name: 'Conduct Close Combat Attack', description: 'Employ attack aviation against enemy forces', warfighting: 'Fires', standard: 'Attack aviation achieves desired effects on target' },
+                { code: 'AUTL-01-3-0010', name: 'Conduct Air Assault Operations', description: 'Move forces by helicopter to objective', warfighting: 'Movement and Maneuver', standard: 'Air assault inserts forces at designated time and location' },
+                { code: 'AUTL-01-3-0015', name: 'Conduct Aerial Medical Evacuation', description: 'Evacuate casualties by air', warfighting: 'Sustainment', standard: 'MEDEVAC meets timeline requirements' },
+                { code: 'AUTL-01-3-0020', name: 'Conduct Aerial Resupply', description: 'Deliver supplies by air', warfighting: 'Sustainment', standard: 'Resupply delivered per operational timeline' },
+                { code: 'AUTL-01-3-0025', name: 'Provide Aviation Command and Control', description: 'Direct and coordinate aviation operations', warfighting: 'Mission Command', standard: 'Aviation operations synchronized with ground scheme of maneuver' },
+                { code: 'AUTL-01-3-0030', name: 'Conduct Combat Search and Rescue', description: 'Recover isolated personnel', warfighting: 'Protection', standard: 'Isolated personnel recovered per timeline' },
+                { code: 'AUTL-01-3-0035', name: 'Provide Aviation Security', description: 'Protect aviation assets and operations', warfighting: 'Protection', standard: 'Aviation operations secured from threats' },
+                { code: 'AUTL-01-3-0040', name: 'Conduct Aerial Gunnery', description: 'Employ aerial weapons systems', warfighting: 'Fires', standard: 'Aerial weapons employed per engagement criteria' },
+                { code: 'AUTL-01-3-0045', name: 'Conduct Night Operations', description: 'Conduct aviation operations in limited visibility', warfighting: 'Movement and Maneuver', standard: 'Night operations maintain operational effectiveness' }
+            ],
+            'military-intelligence': [
+                { code: 'AUTL-02-6-0001', name: 'Conduct Intelligence Operations', description: 'Plan, collect, and disseminate intelligence', warfighting: 'Intelligence', standard: 'Intelligence supports commander decision making' },
+                { code: 'AUTL-02-6-0003', name: 'Conduct Intelligence Preparation of the Battlefield', description: 'Analyze threat, terrain, and weather impacts', warfighting: 'Intelligence', standard: 'IPB products support commander decision making' },
+                { code: 'AUTL-02-6-0010', name: 'Conduct Intelligence Collection', description: 'Execute collection plan using available assets', warfighting: 'Intelligence', standard: 'Collection satisfies priority intelligence requirements' },
+                { code: 'AUTL-02-6-0015', name: 'Process and Exploit Intelligence', description: 'Analyze collected information', warfighting: 'Intelligence', standard: 'Analysis produces actionable intelligence' },
+                { code: 'AUTL-02-6-0020', name: 'Disseminate Intelligence', description: 'Provide intelligence to supported units', warfighting: 'Intelligence', standard: 'Intelligence disseminated to right user at right time' },
+                { code: 'AUTL-02-6-0025', name: 'Conduct Signals Intelligence Operations', description: 'Collect intelligence from electromagnetic emissions', warfighting: 'Intelligence', standard: 'SIGINT supports targeting and situational awareness' },
+                { code: 'AUTL-02-6-0030', name: 'Conduct Human Intelligence Operations', description: 'Collect intelligence from human sources', warfighting: 'Intelligence', standard: 'HUMINT provides unique information on enemy intentions' },
+                { code: 'AUTL-02-6-0035', name: 'Conduct Counterintelligence', description: 'Protect friendly information and operations', warfighting: 'Protection', standard: 'CI prevents enemy intelligence collection' },
+                { code: 'AUTL-02-6-0040', name: 'Provide Intelligence Support to Targeting', description: 'Support targeting process with intelligence', warfighting: 'Fires', standard: 'Intelligence enables effective targeting' }
+            ]
+        };
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('createDebriefModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('createDebriefModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            resetWizard();
+        }
+
+        function resetWizard() {
+            currentStep = 1;
+            debriefData = {
+                unitType: '',
+                unitTypeName: '',
+                missionTitle: '',
+                missionType: '',
+                missionDate: '',
+                warfightingFunctions: [],
+                missionContext: '',
+                debriefMode: 'group',
+                selectedTasks: []
+            };
+            showStep(1);
+            document.querySelectorAll('.selection-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.task-item').forEach(item => item.classList.remove('selected'));
+            document.getElementById('missionTitle').value = '';
+            document.getElementById('missionType').value = '';
+            document.getElementById('missionDate').value = '';
+            document.getElementById('missionContext').value = '';
+            document.getElementById('debriefMode').value = 'group';
+        }
+
+        // Wizard navigation
+        function nextStep() {
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
+            if (currentStep < 4) {
+                currentStep++;
+                showStep(currentStep);
+            } else {
+                createDebrief();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function showStep(step) {
+            // Update wizard steps
+            document.querySelectorAll('.wizard-step').forEach(s => {
+                const stepNum = parseInt(s.dataset.step);
+                s.classList.remove('active', 'completed');
+                if (stepNum === step) {
+                    s.classList.add('active');
+                } else if (stepNum < step) {
+                    s.classList.add('completed');
+                }
+            });
+
+            // Update form sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${step}"]`).classList.add('active');
+
+            // Update buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (step === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+            }
+
+            if (step === 4) {
+                nextBtn.textContent = 'Create Debrief';
+                updateReviewSection();
+            } else {
+                nextBtn.textContent = 'Next';
+            }
+
+            // Load tasks for step 3
+            if (step === 3 && debriefData.unitType) {
+                loadTasks(debriefData.unitType);
+            }
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                if (!debriefData.unitType) {
+                    alert('Please select a unit type');
+                    return false;
+                }
+            } else if (step === 2) {
+                const title = document.getElementById('missionTitle').value;
+                const type = document.getElementById('missionType').value;
+                const date = document.getElementById('missionDate').value;
+                
+                if (!title || !type || !date) {
+                    alert('Please fill in all required fields');
+                    return false;
+                }
+                
+                debriefData.missionTitle = title;
+                debriefData.missionType = type;
+                debriefData.missionDate = date;
+                debriefData.missionContext = document.getElementById('missionContext').value;
+                debriefData.debriefMode = document.getElementById('debriefMode').value;
+                
+                // Get selected warfighting functions
+                const select = document.getElementById('warfightingFunction');
+                debriefData.warfightingFunctions = Array.from(select.selectedOptions).map(opt => opt.value);
+            } else if (step === 3) {
+                if (debriefData.selectedTasks.length === 0) {
+                    alert('Please select at least one task');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Unit type selection
+        function selectUnitType(unitType) {
+            document.querySelectorAll('.selection-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.selection-card').classList.add('selected');
+            
+            debriefData.unitType = unitType;
+            debriefData.unitTypeName = event.target.closest('.selection-card').querySelector('.card-title').textContent;
+        }
+
+        // Task management
+        function loadTasks(unitType) {
+            const taskList = document.getElementById('taskList');
+            const tasks = taskDatabase[unitType] || [];
+            
+            taskList.innerHTML = tasks.map((task, index) => `
+                <div class="task-item" onclick="toggleTask('${task.code}', ${index})">
+                    <div class="task-checkbox"></div>
+                    <div class="task-content">
+                        <div class="task-code">${task.code}</div>
+                        <div class="task-name">${task.name}</div>
+                        <div class="task-description">${task.description}</div>
+                        <div class="task-meta">
+                            <span class="task-tag">${task.warfighting}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            updateTaskCount();
+        }
+
+        function toggleTask(taskCode, index) {
+            const taskItems = document.querySelectorAll('.task-item');
+            const taskItem = taskItems[index];
+            
+            if (debriefData.selectedTasks.includes(taskCode)) {
+                debriefData.selectedTasks = debriefData.selectedTasks.filter(t => t !== taskCode);
+                taskItem.classList.remove('selected');
+            } else {
+                debriefData.selectedTasks.push(taskCode);
+                taskItem.classList.add('selected');
+            }
+            
+            updateTaskCount();
+        }
+
+        function updateTaskCount() {
+            const count = debriefData.selectedTasks.length;
+            document.getElementById('taskCount').textContent = `${count} task${count !== 1 ? 's' : ''} selected`;
+        }
+
+        // Task search
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('taskSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const taskItems = document.querySelectorAll('.task-item');
+                    
+                    taskItems.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+
+        // Review section
+        function updateReviewSection() {
+            document.getElementById('reviewUnitType').textContent = debriefData.unitTypeName;
+            document.getElementById('reviewMissionTitle').textContent = debriefData.missionTitle;
+            document.getElementById('reviewMissionType').textContent = 
+                document.getElementById('missionType').selectedOptions[0].text;
+            document.getElementById('reviewDate').textContent = debriefData.missionDate;
+            document.getElementById('reviewTasks').textContent = 
+                `${debriefData.selectedTasks.length} tasks selected`;
+            document.getElementById('reviewMode').textContent = 
+                debriefData.debriefMode === 'group' ? 'Group Debrief (Collective AAR)' : 'Individual Debrief (Leader/Soldier AAR)';
+        }
+
+        // Create debrief
+        function createDebrief() {
+            console.log('Creating debrief with data:', debriefData);
+            
+            // In production, this would make an API call to create the debrief
+            // For now, we'll just show a success message and close the modal
+            alert('Debrief created successfully!\n\nUnit: ' + debriefData.unitTypeName + 
+                  '\nMission: ' + debriefData.missionTitle + 
+                  '\nTasks: ' + debriefData.selectedTasks.length + ' selected');
+            
+            closeModal();
+            
+            // Optionally reload the table or add the new debrief to the list
+        }
+
+        // Attach to create button
+        document.addEventListener('DOMContentLoaded', function() {
+            const createBtn = document.querySelector('.create-btn');
+            if (createBtn) {
+                createBtn.addEventListener('click', openModal);
+            }
+        });
+
+        // Close modal on overlay click
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
