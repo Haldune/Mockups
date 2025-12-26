@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Division Management - Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        #flowchart-network { width: 100%; height: 400px; background: #1e293b; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-white">Division Management</h1>
+        </div>
+        
+        <!-- List View -->
+        <div class="bg-slate-800 p-6 rounded-lg border border-slate-700/50">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-white">Division Management</h2>
+                <button class="text-sm bg-sky-600 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    + Add Division
+                </button>
+            </div>
+            
+            <div class="space-y-2">
+                <!-- Division 1 -->
+                <div class="border border-slate-700 rounded-lg overflow-hidden">
+                    <div onclick="toggleDivision('div1')" class="flex items-center justify-between p-4 bg-slate-700/30 hover:bg-slate-700/50 cursor-pointer transition-colors">
+                        <div class="flex items-center gap-3 flex-1">
+                            <span id="div1-chevron">▶</span>
+                            <div class="flex-1">
+                                <div class="font-medium text-white">Organization: JayTest</div>
+                                <div class="text-sm text-slate-400">3 employees</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="div1-employees" class="hidden border-t border-slate-700 bg-slate-800/50">
+                        <div class="divide-y divide-slate-700">
+                            <!-- Employee 1 - High Clearance -->
+                            <div class="bg-slate-800/30">
+                                <div onclick="toggleEmployee('emp1')" class="flex items-center justify-between p-4 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <span id="emp1-chevron">▶</span>
+                                        <span>👤</span>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-white">Employee: Alice HighClearance</div>
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="text-sm text-slate-400">Senior Analyst • Intelligence</span>
+                                                <span class="text-xs px-2 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/50">
+                                                    🛡️ Clearance: 3.5
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="emp1-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-12 pr-4 pb-4">
+                                    <div class="pt-3 pb-2">
+                                        <div class="flex items-center gap-2 text-sm font-medium text-slate-300 mb-3">
+                                            📄 Accessible Debrief Sessions (via Briefing Portal)
+                                        </div>
+                                        <div class="text-sm text-slate-500 py-2 italic">
+                                            No accessible debrief sessions
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employee 2 - Medium Clearance -->
+                            <div class="bg-slate-800/30">
+                                <div onclick="toggleEmployee('emp2')" class="flex items-center justify-between p-4 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <span id="emp2-chevron">▶</span>
+                                        <span>👤</span>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-white">Employee: Bob MediumClearance</div>
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="text-sm text-slate-400">Analyst • Operations</span>
+                                                <span class="text-xs px-2 py-0.5 rounded border bg-orange-500/20 text-orange-400 border-orange-500/50">
+                                                    🛡️ Clearance: 2.0
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="emp2-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-12 pr-4 pb-4">
+                                    <div class="pt-3 pb-2">
+                                        <div class="flex items-center gap-2 text-sm font-medium text-slate-300 mb-3">
+                                            📄 Accessible Debrief Sessions (via Briefing Portal)
+                                        </div>
+                                        <div class="text-sm text-slate-500 py-2 italic">
+                                            No accessible debrief sessions
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employee 3 - Low Clearance -->
+                            <div class="bg-slate-800/30">
+                                <div onclick="toggleEmployee('emp3')" class="flex items-center justify-between p-4 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <span id="emp3-chevron">▶</span>
+                                        <span>👤</span>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-white">Employee: Charlie LowClearance</div>
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="text-sm text-slate-400">Junior Analyst • Support</span>
+                                                <span class="text-xs px-2 py-0.5 rounded border bg-green-500/20 text-green-400 border-green-500/50">
+                                                    🛡️ Clearance: 1.0
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="emp3-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-12 pr-4 pb-4">
+                                    <div class="pt-3 pb-2">
+                                        <div class="flex items-center gap-2 text-sm font-medium text-slate-300 mb-3">
+                                            📄 Accessible Debrief Sessions (via Briefing Portal)
+                                        </div>
+                                        <div class="text-sm text-slate-500 py-2 italic">
+                                            No accessible debrief sessions
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flowchart View - Expandable -->
+        <div class="bg-slate-800 rounded-lg border border-slate-700/50 overflow-hidden">
+            <button onclick="toggleFlowchart()" class="w-full flex items-center justify-between p-4 hover:bg-slate-700/50 transition-colors">
+                <h2 class="text-lg font-semibold text-white">Divisions Flowchart</h2>
+                <span id="flowchart-chevron">▼</span>
+            </button>
+            
+            <div id="flowchart-content" class="border-t border-slate-700/50 p-6">
+                <p class="text-sm text-slate-400 text-center mb-4">
+                    Click on nodes to expand and see employees and debriefs.
+                </p>
+                <div id="flowchart-network"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDivision(divId) {
+            const employeesDiv = document.getElementById(divId + '-employees');
+            const chevron = document.getElementById(divId + '-chevron');
+            
+            if (employeesDiv.classList.contains('hidden')) {
+                employeesDiv.classList.remove('hidden');
+                chevron.textContent = '▼';
+            } else {
+                employeesDiv.classList.add('hidden');
+                chevron.textContent = '▶';
+                // Collapse all employees
+                const employees = employeesDiv.querySelectorAll('[id$="-debriefs"]');
+                employees.forEach(emp => {
+                    emp.classList.add('hidden');
+                    const empId = emp.id.replace('-debriefs', '');
+                    const empChevron = document.getElementById(empId + '-chevron');
+                    if (empChevron) empChevron.textContent = '▶';
+                });
+            }
+        }
+
+        function toggleEmployee(empId) {
+            const debriefsDiv = document.getElementById(empId + '-debriefs');
+            const chevron = document.getElementById(empId + '-chevron');
+            
+            if (debriefsDiv.classList.contains('hidden')) {
+                debriefsDiv.classList.remove('hidden');
+                chevron.textContent = '▼';
+            } else {
+                debriefsDiv.classList.add('hidden');
+                chevron.textContent = '▶';
+            }
+        }
+
+        function toggleFlowchart() {
+            const content = document.getElementById('flowchart-content');
+            const chevron = document.getElementById('flowchart-chevron');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.textContent = '▼';
+                initFlowchart();
+            } else {
+                content.classList.add('hidden');
+                chevron.textContent = '▶';
+            }
+        }
+
+        function initFlowchart() {
+            // Only initialize once
+            if (window.flowchartInitialized) return;
+            window.flowchartInitialized = true;
+
+            const container = document.getElementById('flowchart-network');
+            
+            // Create nodes
+            const nodes = new vis.DataSet([
+                { id: 1, label: 'Organization:\nJayTest', color: { background: '#3b82f6', border: '#60a5fa' }, font: { color: 'white', size: 14 } },
+                { id: 2, label: 'Employee:\nAlice HighClearance\nClearance: 3.5', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 3, label: 'Employee:\nBob MediumClearance\nClearance: 2.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 4, label: 'Employee:\nCharlie LowClearance\nClearance: 1.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+            ]);
+
+            // Create edges
+            const edges = new vis.DataSet([
+                { from: 1, to: 2, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 1, to: 3, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 1, to: 4, arrows: 'to', color: { color: '#60a5fa' } },
+            ]);
+
+            const data = { nodes: nodes, edges: edges };
+            const options = {
+                nodes: {
+                    shape: 'box',
+                    margin: 10,
+                    widthConstraint: { maximum: 200 },
+                    heightConstraint: { minimum: 60 }
+                },
+                edges: {
+                    smooth: { type: 'continuous' },
+                    width: 2
+                },
+                layout: {
+                    hierarchical: {
+                        direction: 'UD',
+                        sortMethod: 'directed',
+                        levelSeparation: 150,
+                        nodeSpacing: 200
+                    }
+                },
+                physics: false
+            };
+
+            new vis.Network(container, data, options);
+        }
+
+        // Initialize flowchart if already expanded
+        if (!document.getElementById('flowchart-content').classList.contains('hidden')) {
+            setTimeout(initFlowchart, 100);
+        }
+    </script>
+</body>
+</html>
+
