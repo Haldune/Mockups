@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Division Management - Split View Mockup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        #flowchart-network { width: 100%; height: 800px; background: #1e293b; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white p-8">
+    <div class="max-w-[1920px] mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-white">Division Management</h1>
+        </div>
+        
+        <!-- Split Layout: 2/3 Flowchart, 1/3 List -->
+        <div class="flex gap-6">
+            <!-- Flowchart Section - 2/3 width -->
+            <div class="flex-[2] bg-slate-800 rounded-lg border border-slate-700/50 p-6">
+                <h2 class="text-lg font-semibold text-white mb-4">Divisions Flowchart</h2>
+                <p class="text-sm text-slate-400 mb-4">
+                    Click on nodes to expand and see employees and debriefs.
+                </p>
+                <div id="flowchart-network"></div>
+            </div>
+
+            <!-- Division Management Section - 1/3 width -->
+            <div class="flex-1 bg-slate-800 rounded-lg border border-slate-700/50 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-white">Divisions</h2>
+                    <button class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-semibold py-1.5 px-3 rounded-lg transition-colors">
+                        + Add
+                    </button>
+                </div>
+                
+                <div class="space-y-2 max-h-[800px] overflow-y-auto">
+                    <!-- Division 1 -->
+                    <div class="border border-slate-700 rounded-lg overflow-hidden">
+                        <div onclick="toggleDivision('div1')" class="flex items-center justify-between p-3 bg-slate-700/30 hover:bg-slate-700/50 cursor-pointer transition-colors">
+                            <div class="flex items-center gap-2 flex-1 min-w-0">
+                                <span id="div1-chevron" class="text-xs">▶</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-white text-sm truncate">Organization: JayTest</div>
+                                    <div class="text-xs text-slate-400">3 employees</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="div1-employees" class="hidden border-t border-slate-700 bg-slate-800/50">
+                            <div class="divide-y divide-slate-700">
+                                <!-- Employee 1 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp1')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp1-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Alice HighClearance</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Senior Analyst</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/50 whitespace-nowrap">
+                                                        🛡️ 3.5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp1-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 2 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp2')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp2-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Bob MediumClearance</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Analyst</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-orange-500/20 text-orange-400 border-orange-500/50 whitespace-nowrap">
+                                                        🛡️ 2.0
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp2-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 3 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp3')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp3-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Charlie LowClearance</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Junior Analyst</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-green-500/20 text-green-400 border-green-500/50 whitespace-nowrap">
+                                                        🛡️ 1.0
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp3-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Division 2 -->
+                    <div class="border border-slate-700 rounded-lg overflow-hidden">
+                        <div onclick="toggleDivision('div2')" class="flex items-center justify-between p-3 bg-slate-700/30 hover:bg-slate-700/50 cursor-pointer transition-colors">
+                            <div class="flex items-center gap-2 flex-1 min-w-0">
+                                <span id="div2-chevron" class="text-xs">▶</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-white text-sm truncate">Organization: Engineering Division</div>
+                                    <div class="text-xs text-slate-400">4 employees</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="div2-employees" class="hidden border-t border-slate-700 bg-slate-800/50">
+                            <div class="divide-y divide-slate-700">
+                                <!-- Employee 4 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp4')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp4-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: David Engineer</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Lead Engineer</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/50 whitespace-nowrap">
+                                                        🛡️ 4.0
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp4-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="p-2 bg-slate-800/50 rounded border border-slate-700/50">
+                                                    <div class="font-medium text-white text-xs">Project Alpha Review</div>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">Complete</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 5 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp5')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp5-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Emma Developer</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Software Engineer</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-orange-500/20 text-orange-400 border-orange-500/50 whitespace-nowrap">
+                                                        🛡️ 2.5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp5-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 6 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp6')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp6-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Frank Technician</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Tech Support</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-yellow-500/20 text-yellow-400 border-yellow-500/50 whitespace-nowrap">
+                                                        🛡️ 1.5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp6-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 7 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp7')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp7-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Grace Intern</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Intern</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-green-500/20 text-green-400 border-green-500/50 whitespace-nowrap">
+                                                        🛡️ 0.5
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp7-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Division 3 -->
+                    <div class="border border-slate-700 rounded-lg overflow-hidden">
+                        <div onclick="toggleDivision('div3')" class="flex items-center justify-between p-3 bg-slate-700/30 hover:bg-slate-700/50 cursor-pointer transition-colors">
+                            <div class="flex items-center gap-2 flex-1 min-w-0">
+                                <span id="div3-chevron" class="text-xs">▶</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="font-medium text-white text-sm truncate">Organization: Operations Division</div>
+                                    <div class="text-xs text-slate-400">2 employees</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="div3-employees" class="hidden border-t border-slate-700 bg-slate-800/50">
+                            <div class="divide-y divide-slate-700">
+                                <!-- Employee 8 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp8')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp8-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Henry Manager</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Operations Manager</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/50 whitespace-nowrap">
+                                                        🛡️ 3.0
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp8-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="space-y-1">
+                                                <div class="p-2 bg-slate-800/50 rounded border border-slate-700/50">
+                                                    <div class="font-medium text-white text-xs">Q4 Operations Review</div>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">Incomplete</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee 9 -->
+                                <div class="bg-slate-800/30">
+                                    <div onclick="toggleEmployee('emp9')" class="flex items-center justify-between p-2.5 hover:bg-slate-700/30 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                            <span id="emp9-chevron" class="text-xs">▶</span>
+                                            <span class="text-sm">👤</span>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="font-medium text-white text-xs truncate">Employee: Ivy Coordinator</div>
+                                                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                                    <span class="text-xs text-slate-400 truncate">Operations Coordinator</span>
+                                                    <span class="text-[10px] px-1.5 py-0.5 rounded border bg-orange-500/20 text-orange-400 border-orange-500/50 whitespace-nowrap">
+                                                        🛡️ 2.0
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="emp9-debriefs" class="hidden border-t border-slate-700 bg-slate-900/30 pl-8 pr-2 pb-2">
+                                        <div class="pt-2 pb-1">
+                                            <div class="flex items-center gap-1 text-xs font-medium text-slate-300 mb-2">
+                                                📄 Debriefs
+                                            </div>
+                                            <div class="text-xs text-slate-500 py-1 italic">None</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDivision(divId) {
+            const employeesDiv = document.getElementById(divId + '-employees');
+            const chevron = document.getElementById(divId + '-chevron');
+            
+            if (employeesDiv.classList.contains('hidden')) {
+                employeesDiv.classList.remove('hidden');
+                chevron.textContent = '▼';
+            } else {
+                employeesDiv.classList.add('hidden');
+                chevron.textContent = '▶';
+                // Collapse all employees
+                const employees = employeesDiv.querySelectorAll('[id$="-debriefs"]');
+                employees.forEach(emp => {
+                    emp.classList.add('hidden');
+                    const empId = emp.id.replace('-debriefs', '');
+                    const empChevron = document.getElementById(empId + '-chevron');
+                    if (empChevron) empChevron.textContent = '▶';
+                });
+            }
+        }
+
+        function toggleEmployee(empId) {
+            const debriefsDiv = document.getElementById(empId + '-debriefs');
+            const chevron = document.getElementById(empId + '-chevron');
+            
+            if (debriefsDiv.classList.contains('hidden')) {
+                debriefsDiv.classList.remove('hidden');
+                chevron.textContent = '▼';
+            } else {
+                debriefsDiv.classList.add('hidden');
+                chevron.textContent = '▶';
+            }
+        }
+
+        function initFlowchart() {
+            if (window.flowchartInitialized) return;
+            
+            const container = document.getElementById('flowchart-network');
+            if (!container) {
+                console.error('Flowchart container not found');
+                return;
+            }
+            
+            // Check if vis is loaded
+            if (typeof vis === 'undefined') {
+                console.error('vis.js library not loaded');
+                return;
+            }
+            
+            window.flowchartInitialized = true;
+            
+            // Create nodes
+            const nodes = new vis.DataSet([
+                { id: 1, label: 'Organization:\nJayTest', color: { background: '#3b82f6', border: '#60a5fa' }, font: { color: 'white', size: 14 } },
+                { id: 2, label: 'Employee:\nAlice HighClearance\nClearance: 3.5', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 3, label: 'Employee:\nBob MediumClearance\nClearance: 2.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 4, label: 'Employee:\nCharlie LowClearance\nClearance: 1.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 5, label: 'Organization:\nEngineering Division', color: { background: '#3b82f6', border: '#60a5fa' }, font: { color: 'white', size: 14 } },
+                { id: 6, label: 'Employee:\nDavid Engineer\nClearance: 4.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 7, label: 'Employee:\nEmma Developer\nClearance: 2.5', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 8, label: 'Employee:\nFrank Technician\nClearance: 1.5', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 9, label: 'Employee:\nGrace Intern\nClearance: 0.5', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 10, label: 'Organization:\nOperations Division', color: { background: '#3b82f6', border: '#60a5fa' }, font: { color: 'white', size: 14 } },
+                { id: 11, label: 'Employee:\nHenry Manager\nClearance: 3.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+                { id: 12, label: 'Employee:\nIvy Coordinator\nClearance: 2.0', color: { background: '#10b981', border: '#34d399' }, font: { color: 'white', size: 12 } },
+            ]);
+
+            // Create edges
+            const edges = new vis.DataSet([
+                { from: 1, to: 2, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 1, to: 3, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 1, to: 4, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 5, to: 6, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 5, to: 7, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 5, to: 8, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 5, to: 9, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 10, to: 11, arrows: 'to', color: { color: '#60a5fa' } },
+                { from: 10, to: 12, arrows: 'to', color: { color: '#60a5fa' } },
+            ]);
+
+            const data = { nodes: nodes, edges: edges };
+            const options = {
+                nodes: {
+                    shape: 'box',
+                    margin: 10,
+                    widthConstraint: { maximum: 200 },
+                    heightConstraint: { minimum: 60 }
+                },
+                edges: {
+                    smooth: { type: 'continuous' },
+                    width: 2
+                },
+                layout: {
+                    hierarchical: {
+                        direction: 'UD',
+                        sortMethod: 'directed',
+                        levelSeparation: 150,
+                        nodeSpacing: 150,
+                        blockShifting: true,
+                        edgeMinimization: true
+                    }
+                },
+                physics: false
+            };
+
+            new vis.Network(container, data, options);
+        }
+
+        // Initialize flowchart on load - wait for vis.js to be available
+        function waitForVis() {
+            if (typeof vis !== 'undefined' && document.getElementById('flowchart-network')) {
+                initFlowchart();
+            } else {
+                setTimeout(waitForVis, 100);
+            }
+        }
+        waitForVis();
+    </script>
+</body>
+</html>
+
