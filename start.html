@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haldune - Team Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: white;
+            padding: 3rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 4rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .logo-img {
+            height: 36px;
+            width: auto;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .contact {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .contact a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .baa-callout {
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            border-left: 4px solid #667eea;
+        }
+
+        .baa-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .baa-callout p {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .current-focus {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .current-focus h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .current-focus-note {
+            font-size: 0.85rem;
+            color: #95a5a6;
+            margin-bottom: 1rem;
+        }
+
+        .current-focus ul {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.7;
+            padding-left: 1.25rem;
+        }
+
+        .current-focus li {
+            margin-bottom: 0.35rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .back-btn {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            color: #2c3e50;
+        }
+
+        .typing {
+            overflow: hidden;
+            border-right: 2px solid #667eea;
+            white-space: nowrap;
+            animation: typing 1.2s steps(40) forwards, blink 0.75s step-end infinite;
+            display: inline-block;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent }
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .option-card {
+            padding: 2rem 1.5rem;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .option-card h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .option-card p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .philosophy {
+            padding-top: 0.5rem;
+        }
+
+        .philosophy h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .philosophy p {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .philosophy strong {
+            color: #1a1a1a;
+        }
+
+        .resources {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .resource-card {
+            padding: 1.25rem;
+            border: 1px solid #e0e0e0;
+            background: white;
+            transition: border-color 0.15s ease;
+        }
+
+        .resource-card:hover {
+            border-color: #667eea;
+        }
+
+        .resource-card h5 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .resource-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .resource-card a:hover {
+            text-decoration: underline;
+        }
+
+        .resource-card p {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 0.5rem;
+        }
+
+        .team-section {
+            padding-top: 0.5rem;
+        }
+
+        .team-section h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .member-tag {
+            padding: 0.6rem 1rem;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .member-tag:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .suggest-btn {
+            display: inline-block;
+            padding: 0.6rem 1rem;
+            background: white;
+            border: 1px solid #e0e0e0;
+            color: #667eea;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-top: 0.5rem;
+        }
+
+        .suggest-btn:hover {
+            border-color: #667eea;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .member-tasks-section .task-card {
+            padding: 1.25rem 1.5rem;
+            border: 1px solid #e0e0e0;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .member-tasks-section .task-card h5 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .member-tasks-section .task-card p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        .member-tasks-section .task-list {
+            max-width: 640px;
+        }
+
+        .member-tasks-section .teams-badge {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            body {
+                padding: 2rem;
+            }
+
+            .layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="dark_Haldune_logo.png" alt="Haldune" class="logo-img">
+        <div class="contact">Questions? <a href="mailto:sabebe@haldune.com">sabebe@haldune.com</a></div>
+    </header>
+
+    <!-- Initial Selection -->
+    <div id="start" class="section active">
+        <div class="baa-callout">
+            <h3 class="baa-title">BAA — Broad Agency Anouncment (lol)</h3>
+            <p>We're recruiting developers and this is an org-wide effort. Any referrals would be appreciated.</p>
+        </div>
+        <div class="question">
+            <span class="typing">What team are you on?</span>
+        </div>
+        <div class="options">
+            <div class="option-card" onclick="showSection('sales')">
+                <h3>Sales</h3>
+                <p>Generate leads, build partnerships, close pilots</p>
+            </div>
+            <div class="option-card" onclick="showSection('features')">
+                <h3>Features</h3>
+                <p>Build and ship new capabilities</p>
+            </div>
+            <div class="option-card" onclick="showSection('qa')">
+                <h3>Quality Assurance</h3>
+                <p>Test, verify, prevent regressions</p>
+            </div>
+            <div class="option-card" onclick="showSection('hiring')">
+                <h3>Hiring</h3>
+                <p>Find and onboard new team members</p>
+            </div>
+        </div>
+
+        <div class="current-focus">
+            <h4>What is currently happening?</h4>
+            <p class="current-focus-note">Updates weekly.</p>
+            <ul>
+                <li>Finalizing our metadata labeling pipeline</li>
+                <li>Pitching for the second round at CNVC</li>
+                <li>Completing our business plan and business deck to an acceptable standard</li>
+                <li>Recruiting 3 sales execs</li>
+                <li>Recruiting 2 developers</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sales Team -->
+    <div id="sales" class="section">
+        <a class="back-btn" onclick="showSection('start')">← Back</a>
+        
+        <div class="question">Which vertical?</div>
+        <div class="options">
+            <div class="option-card" onclick="showSection('sales-defense')">
+                <h3>Defense</h3>
+                <p>DoD, SOF, institutional partnerships</p>
+            </div>
+            <div class="option-card" onclick="showSection('sales-cyber')">
+                <h3>Cyber</h3>
+                <p>Commercial cyber, incident response</p>
+            </div>
+            <div class="option-card" onclick="showSection('sales-cnvc')">
+                <h3>CNVC</h3>
+                <p>Accelerator prep and execution</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales - Defense -->
+    <div id="sales-defense" class="section">
+        <a class="back-btn" onclick="showSection('sales')">← Back</a>
+        
+        <h2>Sales: Defense</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p>Multi-node penetration: Get buy-in at multiple points in an institution. Let them talk to each other about us.</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>Lead Database</h5>
+                    <a href="#" target="_blank">→ Open Airtable</a>
+                    <p>Track institutions, researchers, decision makers</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Outreach Templates</h5>
+                    <a href="#" target="_blank">→ Email Library</a>
+                    <p>Institution pitches, follow-ups, partnership proposals</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Defense Pitch Deck</h5>
+                    <a href="#" target="_blank">→ View Deck</a>
+                    <p>Main pitch for DoD and institutional buyers</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Michaels Doctrine</h5>
+                    <a href="#" target="_blank">→ Read Strategy</a>
+                    <p>Welcome the indoctrination. Multi-node penetration playbook for institutions</p>
+                </div>
+
+                <button class="suggest-btn" onclick="suggestSource('defense')">+ Suggest lead source</button>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('michael-ob', this.closest('.section').id)">Michael Ortiz Benz (Lead)</div>
+                <div class="member-tag" onclick="showMemberTasks('firas', this.closest('.section').id)">Firas Hashmi</div>
+                <div class="member-tag" onclick="showMemberTasks('sam-r', this.closest('.section').id)">Samuel Roizen</div>
+                <div class="member-tag" onclick="showMemberTasks('sam-h', this.closest('.section').id)">Sam Hagood</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales - Cyber -->
+    <div id="sales-cyber" class="section">
+        <a class="back-btn" onclick="showSection('sales')">← Back</a>
+        
+        <h2>Sales: Cyber</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p><strong>"Give us a fucking dollar."</strong></p>
+                <p>We skip customer discovery. We go straight to sale cycles. Nothing validates like a single sale.</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>Cyber Pitch Deck</h5>
+                    <a href="#" target="_blank">→ View Deck</a>
+                    <p>Commercial cyber/incident response positioning</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Target Companies</h5>
+                    <a href="#" target="_blank">→ PitchBook List</a>
+                    <p>SOC teams, incident response orgs</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Advisor: Grant Small</h5>
+                    <a href="mailto:grant@example.com">→ Email Grant</a>
+                    <p>Exited cyber founder, can intro to buyers</p>
+                </div>
+
+                <button class="suggest-btn" onclick="suggestSource('cyber')">+ Suggest lead source</button>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('michael-q', this.closest('.section').id)">Michael Quintin</div>
+                <div class="member-tag" onclick="showMemberTasks('ojas', this.closest('.section').id)">Ojas Parmar</div>
+                <div class="member-tag" onclick="showMemberTasks('sawiros', this.closest('.section').id)">Sawiros</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales - CNVC -->
+    <div id="sales-cnvc" class="section">
+        <a class="back-btn" onclick="showSection('sales')">← Back</a>
+        
+        <h2>Sales: CNVC</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p>We're done with the second round. We're exerting zero effort on CNVC and resuming business as normal.</p>
+                <p>We will not make business decisions based on CNVC. We have already put our best foot forward</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>Business Plan</h5>
+                    <a href="#" target="_blank">→ View Doc</a>
+                    <p>Needs polish before advisor meeting</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Financials (Max)</h5>
+                    <a href="mailto:max@example.com">→ Email Max</a>
+                    <p>Advisor for financial modeling</p>
+                </div>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('firas', this.closest('.section').id)">Firas Hashmi (Lead)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Team -->
+    <div id="features" class="section">
+        <a class="back-btn" onclick="showSection('start')">← Back</a>
+        
+        <h2>Features</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p><strong>2-day sprints.</strong></p>
+                <p>Every task should be completable in 2 days with one cursor prompt. If it's not, break it down.</p>
+                <p>Thursday: Michael red teams. Friday: fix issues. Ship weekly.</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>Sprint Board</h5>
+                    <a href="#" target="_blank">→ Open Board</a>
+                    <p>Current 2-day sprint tasks and assignments</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Repository</h5>
+                    <a href="#" target="_blank">→ GitHub Repo</a>
+                    <p>Main codebase with cursor setup guide</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Dev Cycle Documentation</h5>
+                    <a href="#" target="_blank">→ Read Docs</a>
+                    <p>How sprints work, red team process, standards</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Current Focus: Briefing Metadata</h5>
+                    <a href="#" target="_blank">→ Feature Spec</a>
+                    <p>Label debriefs with filterable metadata</p>
+                </div>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('sawiros', this.closest('.section').id)">Sawiros (CTO)</div>
+                <div class="member-tag" onclick="showMemberTasks('jared', this.closest('.section').id)">Jared</div>
+                <div class="member-tag" onclick="showMemberTasks('firas', this.closest('.section').id)">Firas Hashmi</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QA Team -->
+    <div id="qa" class="section">
+        <a class="back-btn" onclick="showSection('start')">← Back</a>
+        
+        <h2>Quality Assurance</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p><strong>Prevent regression at all costs.</strong></p>
+                <p>Write tests that run on every push. If a feature works, it should never break again.</p>
+                <p>Red team mindset: find what breaks, document it, create tests for it.</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>QA Standards Doc</h5>
+                    <a href="#" target="_blank">→ Read Standards</a>
+                    <p>What tests to write for each feature type</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Testing Checklist</h5>
+                    <a href="#" target="_blank">→ View Checklist</a>
+                    <p>What "done" means for each task</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Staging Environment</h5>
+                    <a href="#" target="_blank">→ Access Staging</a>
+                    <p>Test new features before production</p>
+                </div>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('michael-ob', this.closest('.section').id)">Michael Ortiz Benz (Red Team Lead)</div>
+                <div class="member-tag" onclick="showMemberTasks('jared', this.closest('.section').id)">Jared</div>
+                <div class="member-tag" onclick="showMemberTasks('neelakshi', this.closest('.section').id)">Neelakshi Rashinkar</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hiring Team -->
+    <div id="hiring" class="section">
+        <a class="back-btn" onclick="showSection('start')">← Back</a>
+        
+        <h2>Hiring</h2>
+        
+        <div class="layout">
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p><strong>Hire fast. Trial week.</strong></p>
+                <p>Looking for scrappy people who want experience. Younger is helpful but not required.</p>
+                <p>One week trial with a specific project. If they're still popping, great. If not, not a good fit.</p>
+                <p>Focus: UChicago devs and sales executives.</p>
+            </div>
+            
+            <div class="resources">
+                <div class="resource-card">
+                    <h5>Current Openings</h5>
+                    <a href="#" target="_blank">→ View Roles</a>
+                    <p>Developers, sales executives</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Trial Week Structure</h5>
+                    <a href="#" target="_blank">→ Read Guide</a>
+                    <p>What trial candidates do, evaluation rubric</p>
+                </div>
+                
+                <div class="resource-card">
+                    <h5>Job Descriptions</h5>
+                    <a href="#" target="_blank">→ View JDs</a>
+                    <p>Selling the scrappy, fast-moving culture</p>
+                </div>
+            </div>
+
+            <div class="team-section">
+                <h4>Ownership</h4>
+                <div class="member-tag" onclick="showMemberTasks('sawiros', this.closest('.section').id)">Sawiros (Currently solo)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Tasks (populated from team-tasks.js) -->
+    <div id="member-tasks" class="section member-tasks-section">
+        <a class="back-btn" id="member-tasks-back">← Back</a>
+        <h2 id="member-tasks-name"></h2>
+        <p class="teams-badge" id="member-tasks-teams"></p>
+        <div class="task-list" id="member-tasks-list"></div>
+    </div>
+
+    <script src="team-tasks.js"></script>
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showMemberTasks(memberId, returnSectionId) {
+            const nameEl = document.getElementById('member-tasks-name');
+            const teamsEl = document.getElementById('member-tasks-teams');
+            const listEl = document.getElementById('member-tasks-list');
+            const backBtn = document.getElementById('member-tasks-back');
+            backBtn.onclick = () => showSection(returnSectionId || 'start');
+
+            const member = typeof tasksData !== 'undefined' ? tasksData[memberId] : null;
+            if (typeof tasksData === 'undefined') {
+                nameEl.textContent = 'Error';
+                teamsEl.textContent = '';
+                listEl.innerHTML = '<p style="color:#95a5a6">Could not load team-tasks.js. Ensure it is in the same directory as start.html.</p>';
+            } else if (!member) {
+                nameEl.textContent = 'Unknown';
+                teamsEl.textContent = '';
+                listEl.innerHTML = '<p style="color:#95a5a6">No member data found.</p>';
+            } else {
+                nameEl.textContent = member.name + "'s Tasks";
+                teamsEl.textContent = member.teams?.length ? member.teams.join(' · ') : '';
+                if (member.tasks?.length) {
+                    listEl.innerHTML = member.tasks.map(t =>
+                        `<div class="task-card"><h5>${escapeHtml(t.title)}</h5><p>${escapeHtml(t.description)}</p></div>`
+                    ).join('');
+                } else {
+                    listEl.innerHTML = '<p style="color:#95a5a6">No tasks yet.</p>';
+                }
+            }
+
+            showSection('member-tasks');
+        }
+
+        function escapeHtml(s) {
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
+        function suggestSource(vertical) {
+            const source = prompt(`Suggest a new lead source for ${vertical}:`);
+            if (source && source.trim()) {
+                alert(`Suggested: "${source}"\n\n(Would commit to GitHub in production)`);
+                console.log('Would commit:', {
+                    vertical: vertical,
+                    source: source,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
+        setTimeout(() => {
+            const typing = document.querySelector('.typing');
+            if (typing) typing.style.borderRight = 'none';
+        }, 1500);
+    </script>
+</body>
+</html>
