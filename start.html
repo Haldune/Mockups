@@ -629,8 +629,8 @@
 
 
         <div class="current-focus">
-            <h4>SEVEN DAY SPRINT: What is currently happening?</h4>
-            <p class="current-focus-note">Updates weekly.</p>
+            <h4>Recurring schedule</h4>
+            <p class="current-focus-note">All times CT</p>
             
             <div class="week-bar" id="week-bar">
                 <!-- Days will be populated by JavaScript -->
@@ -1018,22 +1018,22 @@
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const currentDay = new Date().getDay(); // 0 = Sunday, 6 = Saturday
 
-            // Sync schedule: day index -> array of sync types
+            // Recurring meeting schedule (CT)
             const syncSchedule = {
-                0: [], // Sunday - cycle starts
-                1: ['defense', 'tech'], // Monday - Defense outreach sync, Tech
-                2: ['cyber'], // Tuesday - Cyber
-                3: ['defense', 'tech'], // Wednesday - Defense outreach sync, Tech
-                4: ['cyber'], // Thursday - Cyber
-                5: ['all-hands'], // Friday - All Hands
-                6: [] // Saturday - cycle ends
+                0: [], // Sunday
+                1: ['defense', 'cyber'], // Monday — Defense 12n, Cyber 1pm
+                2: ['tech'], // Tuesday — Tech 4pm
+                3: ['defense', 'cyber'], // Wednesday — Defense 12n, Cyber 1pm
+                4: ['tech'], // Thursday — Tech 4pm
+                5: ['all-hands'], // Friday — All Hands 4pm
+                6: [] // Saturday
             };
 
             const syncLabels = {
-                'defense': 'Defense',
-                'cyber': 'Cyber',
-                'tech': 'Tech',
-                'all-hands': 'All Hands'
+                'defense': 'Def 12n',
+                'cyber': 'Cyb 1pm',
+                'tech': 'Tech 4pm',
+                'all-hands': 'All 4pm'
             };
 
             weekBar.innerHTML = days.map((dayLabel, index) => {
